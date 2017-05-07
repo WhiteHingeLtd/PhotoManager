@@ -62,7 +62,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\RowDetailsPage.xaml">
+    <Page Include="Controls\ImageViewerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PackSizeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RowDetailsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -85,8 +93,14 @@
     <Compile Include="Controls\FilmStripFrame.xaml.cs">
       <DependentUpon>FilmStripFrame.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\RowDetailsPage.xaml.cs">
-      <DependentUpon>RowDetailsPage.xaml</DependentUpon>
+    <Compile Include="Controls\ImageViewerWindow.xaml.cs">
+      <DependentUpon>ImageViewerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PackSizeControl.xaml.cs">
+      <DependentUpon>PackSizeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RowDetailsControl.xaml.cs">
+      <DependentUpon>RowDetailsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\RowDetailsTemplateTemplate.xaml.cs">
       <DependentUpon>RowDetailsTemplateTemplate.xaml</DependentUpon>
@@ -138,6 +152,24 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="vectors\Enlarge.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="vectors\Folder.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="vectors\EditWhite.png" />
+    <Resource Include="vectors\FodlerWhite.png" />
+    <Resource Include="vectors\DarkNoise.png" />
+    <Content Include="vectors\FileNotFound.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

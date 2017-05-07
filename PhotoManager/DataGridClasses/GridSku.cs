@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WHLClasses;
 
 namespace PhotoManager.DataGridClasses
 {
-    class GridSku
+    public class GridSku
     {
         
         public string Sku { get;  set;}
@@ -33,11 +34,15 @@ namespace PhotoManager.DataGridClasses
             
         }
 
+        private ThreadStart childrenLoader = null;
+        private Thread childLoadThread = null;
+
         internal void LoadChildrenAsync()
         {
-            //Do it in the background
-
-            children = Mainwindow.Data_Skus.GatherChildren(Data.ShortSku);
+            childrenLoader = new ThreadStart(LoadChildren);
+            childLoadThread = new Thread(childrenLoader);
+            childLoadThread.IsBackground = true;
+            childLoadThread.Start();
         }
 
         internal void LoadChildren()
@@ -50,7 +55,7 @@ namespace PhotoManager.DataGridClasses
         {
             if (children == null)
             {
-                GetChildren();
+                LoadChildren();
             }
             return children;
         }

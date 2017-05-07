@@ -4,8 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PhotoManager.Controls"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" Width="138" Height="138" RenderTransformOrigin="0.5,0.5" ClipToBounds="True">
+             mc:Ignorable="d" Width="138" Height="138" RenderTransformOrigin="0.5,0.5" ClipToBounds="True">
     <UserControl.Resources>
         <Storyboard x:Key="OpenThing">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="userControl">
@@ -15,6 +14,9 @@
                         <CubicEase EasingMode="EaseInOut"/>
                     </EasingDoubleKeyFrame.EasingFunction>
                 </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="HoverControlGrid">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0.005"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <Storyboard x:Key="FadeImageIn">
@@ -31,15 +33,34 @@
                 <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="1"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
+        <Storyboard x:Key="FadeControlsIn">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="HoverControlGrid">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="FadeControlsOut">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="HoverControlGrid">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.005"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
     </UserControl.Resources>
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="FrameworkElement.Loaded">
             <BeginStoryboard Storyboard="{StaticResource OpenThing}"/>
         </EventTrigger>
+        <EventTrigger RoutedEvent="UIElement.MouseEnter" SourceName="HoverControlGrid">
+            <BeginStoryboard x:Name="FadeImageIn_BeginStoryboard" Storyboard="{StaticResource FadeControlsIn}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="UIElement.MouseLeave" SourceName="HoverControlGrid">
+            <BeginStoryboard x:Name="FadeControlsOut_BeginStoryboard" Storyboard="{StaticResource FadeControlsOut}"/>
+        </EventTrigger>
     </UserControl.Triggers>
     <Border x:Name="FSBorder" Margin="1" BorderBrush="#FFCBCBCB" BorderThickness="1">
-        <Grid Width="134">
-            <Image x:Name="FilmstripImage" RenderTransformOrigin="0.5,0.5" Opacity="0">
+        <Grid x:Name="MainGrid">
+            <Image x:Name="FilmstripImage" RenderTransformOrigin="0.5,0.5" Opacity="0" Source="../vectors/FileNotFound.png" MouseLeftButtonUp="FilmstripImage_MouseLeftButtonUp">
+                <Image.ContextMenu>
+                    <ContextMenu/>
+                </Image.ContextMenu>
                 <Image.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -49,7 +70,24 @@
                     </TransformGroup>
                 </Image.RenderTransform>
             </Image>
-            <TextBlock x:Name="FilmstripID" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Bottom" Padding="4" Background="#B2FFFFFF"/>
+            <TextBlock x:Name="FilmstripID" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Bottom" Padding="4" Background="#B2B28118"/>
+            <Grid x:Name="HoverControlGrid" Margin="3,3,3,24" Background="#B2FFFFFF">
+                <StackPanel Margin="0,24,0,0">
+                    <Button x:Name="MakePrimaryButton" Content="Make Primary" VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14"/>
+                    <Button x:Name="PacksizesButton" Content="Packsizes..." VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14"/>
+                    <Button x:Name="CopyToFilmstripButton" Content="Copy to Filmstrip" VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14" Click="CopyToFilmstripButton_Click"/>
+                    <Button x:Name="AddToSkuButton" Content="Add to..." VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14"/>
+                </StackPanel>
+
+            </Grid>
+            <Button x:Name="EnlargeButton" HorizontalAlignment="Right" VerticalAlignment="Top" Width="34" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Height="24" Padding="0" Margin="0,3,3,0" ToolTip="Enlarge Image" Click="EnlargeButton_Click">
+                <Image x:Name="EnlargeImage" Source="/PhotoManager;component/vectors/Enlarge.png"/>
+            </Button>
+            <Button x:Name="OpenInFolderButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="34" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Height="24" Padding="0" Margin="3,3,0,0" ToolTip="Open in Folder" Click="OpenInFolderButton_Click">
+                <Image x:Name="OpenInFolderImage" Source="/PhotoManager;component/vectors/Folder.png"/>
+            </Button>
+
+
         </Grid>
     </Border>
 </UserControl>

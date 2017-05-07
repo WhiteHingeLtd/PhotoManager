@@ -43,7 +43,7 @@ namespace PhotoManager
         private void button_Click(object sender, RoutedEventArgs e)
         {
             Presses += 1;
-            FilmStripFrame test = new FilmStripFrame(Photos[Presses]);
+            FilmStripFrame test = new FilmStripFrame(Photos[Presses],this, true);
             Filmstrip.Children.Add(test);
             test.BringIntoView();
             fstb.Text = Presses.ToString();
@@ -69,7 +69,11 @@ namespace PhotoManager
             List<GridSku> gridcontentList = new List<GridSku>();
             foreach (WhlSKU Sku in searchresults)
             {
-                gridcontentList.Add(new GridSku(Sku,this));
+                GridSku NewGS = new GridSku(Sku, this);
+                gridcontentList.Add(NewGS);
+                if (searchresults.Count < 5){NewGS.LoadChildrenAsync();}
+                
+
             }
             //Set the source
             ItemGrid.ItemsSource = gridcontentList;
@@ -81,42 +85,54 @@ namespace PhotoManager
             if ((CurrentInstance != e.Row.Item as GridSku))
             {
                 Grid HostGrid = e.DetailsElement as Grid;
-                Frame MainFrame = null;
-                foreach (UIElement asd in HostGrid.Children)
-                {
-                    if (asd.GetType() == typeof(Frame))
-                    {
-                        MainFrame = asd as Frame;
-                    }
-                }
                 GridSku GSInst = e.Row.Item as GridSku;
-                MainFrame.Content = new RowDetailsPage(GSInst, this);
+                CurrentInstance = GSInst;
+                if (HostGrid.Children.Count == 0)
+                {
+                    
+                    HostGrid.Children.Add(new RowDetailsControl(GSInst, this));
+
+
+                }
+                else
+                {
+                    (HostGrid.Children[0] as RowDetailsControl).Page_Shown();
+                }
+                
             }
             
         }
 
-        internal void ResetFilmstrip()
+        internal void ClearFilmstrip()
         {
             Filmstrip.Children.Clear();
         }
 
         internal void PopulateFilmstrip(List<FileInfo> Files)
         {
+            List<FileInfo> NewFiles = new List<FileInfo>();
             foreach (FileInfo File in Files)
             {
-                try
+                if (!NewFiles.Contains(File))
                 {
-                    FilmStripFrame newimg = new FilmStripFrame(File);
-                    Filmstrip.Children.Add(newimg);
-                    newimg.BringIntoView();
+                    NewFiles.Add(File);
+                    AddFilmstripItem(File);
                 }
-                catch (Exception a)
-                {
-                    
-                }
-                
             }
+        }
 
+        internal void AddFilmstripItem(FileInfo file)
+        {
+            try
+            {
+                FilmStripFrame newimg = new FilmStripFrame(file, this, true, false);
+                Filmstrip.Children.Add(newimg);
+                newimg.BringIntoView();
+            }
+            catch (Exception a)
+            {
+
+            }
         }
     }
 }

@@ -6,25 +6,25 @@
         xmlns:local="clr-namespace:PhotoManager"
         xmlns:dgc="clr-namespace:PhotoManager.DataGridClasses" x:Name="Main_Window" x:Class="PhotoManager.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Width="900" Height="600" Initialized="Main_Window_Initialized" Icon="icon.ico">
+        Title="Photo Manager" Width="900" Height="600" Initialized="Main_Window_Initialized" Icon="icon.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
             <RowDefinition/>
-            <RowDefinition Height="150"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <ScrollViewer x:Name="FilmstripContainer" Grid.Row="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
             <WrapPanel x:Name="Filmstrip" Margin="6" Height="138"/>
         </ScrollViewer>
-        <Button x:Name="button" Content="Add filmstrip" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="135,116,0,0" Click="button_Click" Height="20" Grid.Row="2"/>
-        <TextBox x:Name="fstb" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" Margin="10,117,0,0" Grid.Row="2"/>
-        <CheckBox x:Name="autocheckbox" Content="CheckBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="215,116,0,0" Height="15" Width="71" Grid.Row="2"/>
-        <DataGrid x:Name="ItemGrid" Margin="0" Grid.Row="1" BorderBrush="#FF919191" BorderThickness="0,1" AutoGenerateColumns="False" RowDetailsVisibilityChanged="ItemGrid_RowDetailsVisibilityChanged" SelectionMode="Single" IsTextSearchEnabled="True" IsReadOnly="True">
+        <Button x:Name="button" Content="Add filmstrip" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="135,4,0,0" Click="button_Click" Height="20" Grid.Row="2"/>
+        <TextBox x:Name="fstb" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" Margin="10,5,0,0" Grid.Row="2"/>
+        <CheckBox x:Name="autocheckbox" Content="CheckBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="215,4,0,0" Height="15" Width="71" Grid.Row="2"/>
+        <DataGrid x:Name="ItemGrid" Margin="0" Grid.Row="1" BorderBrush="#FF919191" BorderThickness="0,1" AutoGenerateColumns="False" RowDetailsVisibilityChanged="ItemGrid_RowDetailsVisibilityChanged" SelectionMode="Single" IsTextSearchEnabled="True" IsReadOnly="True" AlternatingRowBackground="#FFE2E4E8" RowBackground="#FFF9F9F9" RowHeight="25" VirtualizingPanel.ScrollUnit="Pixel" EnableRowVirtualization="False">
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <Grid>
-                        <Frame x:Name="RowDetailPagePresenter" Content="Frame" Margin="0" Background="#FFE4B1B1"  NavigationUIVisibility="Hidden"/>
+
                     </Grid>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>

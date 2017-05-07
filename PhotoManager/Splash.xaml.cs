@@ -37,7 +37,7 @@ namespace PhotoManager
             foreach (AssemblyName name in Assembly.GetReferencedAssemblies())
             {
                 Worker.ReportProgress(0, "Loading " + name.Name.ToString());
-                Thread.Sleep(25);
+                Thread.Sleep(5);
                 if (!AppDomain.CurrentDomain.GetAssemblies().Any(x => x.FullName == name.FullName))
                 {
                     LoadAssemblies(Assembly.Load(name));
@@ -58,7 +58,7 @@ namespace PhotoManager
             HomeRef.Data_SkusMixdown = HomeRef.Data_Skus.MakeMixdown();
             Worker.ReportProgress(0, "Loading Employee Data");
             HomeRef.Data_Employees = new EmployeeCollection();
-            Thread.Sleep(20);
+//            Thread.Sleep(20);
             Worker.ReportProgress(0, "Preparing Authentication");
             HomeRef.Data_User = new AuthClass();
 
