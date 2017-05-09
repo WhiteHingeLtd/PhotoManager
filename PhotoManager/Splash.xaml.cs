@@ -54,11 +54,13 @@ namespace PhotoManager
             GenericDataController loader = new GenericDataController();
             Worker.ReportProgress(0, "Loading Item Data");
             HomeRef.Data_Skus = loader.SmartSkuCollLoad();
-            Worker.ReportProgress(0,"Making Mixdown");
+            Worker.ReportProgress(0, "Making Mixdown");
             HomeRef.Data_SkusMixdown = HomeRef.Data_Skus.MakeMixdown();
             Worker.ReportProgress(0, "Loading Employee Data");
             HomeRef.Data_Employees = new EmployeeCollection();
-//            Thread.Sleep(20);
+            //We're gonna move to the mainwindow to do the rest of the loading before loading user datra.
+            HomeRef.SplashStartupTasks(Worker);
+            //Aaaand we're back.
             Worker.ReportProgress(0, "Preparing Authentication");
             HomeRef.Data_User = new AuthClass();
 

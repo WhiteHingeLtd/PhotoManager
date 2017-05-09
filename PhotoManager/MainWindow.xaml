@@ -14,9 +14,24 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ScrollViewer x:Name="FilmstripContainer" Grid.Row="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
-            <WrapPanel x:Name="Filmstrip" Margin="6" Height="138"/>
-        </ScrollViewer>
+        <Grid  Grid.Row="3" Background="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="28"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer x:Name="FilmstripContainer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden" Grid.Row="1">
+                <WrapPanel x:Name="Filmstrip" Margin="6" Height="138"/>
+            </ScrollViewer>
+            <Border BorderBrush="#FF8F8F8F" BorderThickness="0,0,0,1" Margin="5,0">
+                <Grid>
+                    <CheckBox x:Name="folderWatcherEnabled" Content="Add files from folder:" Margin="0,7,185,0" VerticalAlignment="Top" Foreground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" HorizontalAlignment="Right" IsChecked="True" Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" BorderBrush="#FFBDBDBD" Unchecked="folderVarsChanged" Checked="folderVarsChanged"/>
+                    <TextBox x:Name="folderWatcherSourceFolder" Text="T:\Photos\Amazon"  Width="180" Margin="0,3" Background="White" BorderBrush="#FF8D6E6E" HorizontalAlignment="Right" VerticalContentAlignment="Center" Padding="3,0,0,0" TextChanged="folderVarsChanged"/>
+                </Grid>
+            </Border>
+            <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Filmstrip" VerticalAlignment="Top" Foreground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" Margin="6,3,0,0" FontSize="16"/>
+
+        </Grid>
+
         <Button x:Name="button" Content="Add filmstrip" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="135,4,0,0" Click="button_Click" Height="20" Grid.Row="2"/>
         <TextBox x:Name="fstb" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" Margin="10,5,0,0" Grid.Row="2"/>
         <CheckBox x:Name="autocheckbox" Content="CheckBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="215,4,0,0" Height="15" Width="71" Grid.Row="2"/>
@@ -39,6 +54,7 @@
         </DataGrid>
         <TextBox x:Name="SearchBox" HorizontalAlignment="Left" Height="23" Margin="10,7,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="SearchButton" Content="Button" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Width="75" Click="SearchButton_Click"/>
+        <Button x:Name="button1" Content="Button" HorizontalAlignment="Left" Margin="376,10,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
 
     </Grid>
 </Window>

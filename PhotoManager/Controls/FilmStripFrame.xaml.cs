@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using WHLClasses.MiscFunctions;
 
 namespace PhotoManager.Controls
 {
@@ -28,7 +29,7 @@ namespace PhotoManager.Controls
     public partial class FilmStripFrame : UserControl
     {
         private BitmapImage SourceImage = null;
-        private FileInfo SourceFileInfo = null;
+        internal FileInfo SourceFileInfo = null;
         internal bool _isprimary = false;
         private MainWindow MainWindowRef = null;
         public bool IsPrimary
@@ -67,6 +68,7 @@ namespace PhotoManager.Controls
                 CopyToFilmstripButton.Visibility = Visibility.Collapsed;
                 PacksizesButton.Visibility = Visibility.Collapsed;
                 AddToSkuButton.Visibility = Visibility.Visible;
+                RemoveFromFilmstripButton.Visibility = Visibility.Visible;
             }
             else
             {
@@ -77,6 +79,7 @@ namespace PhotoManager.Controls
                 PacksizesButton.Visibility = Visibility.Visible;
                 CopyToFilmstripButton.Visibility = Visibility.Visible;
                 MakePrimaryButton.Visibility = Visibility.Visible;
+                RemoveFromFilmstripButton.Visibility = Visibility.Collapsed;
             }
             IsPrimary = Primary;
             
@@ -84,6 +87,11 @@ namespace PhotoManager.Controls
 
 
         }
+
+
+        // Thanks to Ted from this articale for the code which inspired the following block eamning that I have to load the file into memory then feed it to the BitmapImage because BitmapImage objects lock the source!
+        // Source: http://tedshelloworld.blogspot.co.uk/2010/11/bitmaps-in-wpf-disposing-of-bitmaps-in.html
+        // This attribution has also been used in Framework which is where the function fo rthis resides for ez file loading.
 
         #region 'dodgy image stuff'
         private BitmapImage MakeImage()
@@ -93,7 +101,7 @@ namespace PhotoManager.Controls
             SourceImage.DecodePixelWidth = 134;
             SourceImage.DecodePixelHeight = 134;
             SourceImage.CacheOption = BitmapCacheOption.OnDemand;
-            SourceImage.UriSource = new Uri(SourceFileInfo.FullName);
+            SourceImage.StreamSource = Misc.LoadFileStreamToMemory(SourceFileInfo.FullName);
             SourceImage.EndInit();
             return SourceImage;
         }
@@ -127,6 +135,7 @@ namespace PhotoManager.Controls
             
         }
         
+
         private void BackgroundThread()
         {
             
@@ -136,9 +145,31 @@ namespace PhotoManager.Controls
 
             
         }
-        
+
         #endregion
 
+        #region "removal"
+
+        
+        private void RemoveFromContainer(Action<FilmStripFrame> Callback)
+        {
+            Storyboard Sb = this.FindResource("AnimateRemoval") as Storyboard;
+            Sb.Begin();
+            _RemovalCallback = Callback;
+
+            Thread asdThread = new Thread(ProcessRemovalCallback);
+            asdThread.Start();
+        }
+
+        private Action<FilmStripFrame> _RemovalCallback = null;
+
+        private void ProcessRemovalCallback()
+        {
+            Thread.Sleep(700); //Sleep for 1000ms becuae animation takes 700ms then we remove it when its done and render has had time to do it.
+            Disp.Invoke(() => { _RemovalCallback.Invoke(this); },DispatcherPriority.Normal);
+        }
+
+        #endregion
         private void OpenInFolderButton_Click(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("explorer.exe", "/select, \"" + SourceFileInfo.FullName + "\"");
@@ -165,6 +196,11 @@ namespace PhotoManager.Controls
         private void CopyToFilmstripButton_Click(object sender, RoutedEventArgs e)
         {
             MainWindowRef.AddFilmstripItem(SourceFileInfo);
+        }
+
+        private void RemoveFromFilmstripButton_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveFromContainer(MainWindowRef.RemoveControlFromFilmstrip);
         }
     }
 }

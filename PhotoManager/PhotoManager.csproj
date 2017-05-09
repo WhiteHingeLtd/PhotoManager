@@ -90,6 +90,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\Constants-ish.cs" />
     <Compile Include="Controls\FilmStripFrame.xaml.cs">
       <DependentUpon>FilmStripFrame.xaml</DependentUpon>
     </Compile>
@@ -110,6 +111,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="Splash.xaml.cs">
       <DependentUpon>Splash.xaml</DependentUpon>
       <SubType>Code</SubType>

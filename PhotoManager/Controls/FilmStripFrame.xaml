@@ -43,7 +43,39 @@
                 <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.005"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
+        <Storyboard x:Key="AnimateRemoval">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="MainGrid">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseIn"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)" Storyboard.TargetName="FSBorder">
+                <EasingColorKeyFrame KeyTime="0:0:0.4" Value="#00CBCBCB">
+                    <EasingColorKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseIn"/>
+                    </EasingColorKeyFrame.EasingFunction>
+                </EasingColorKeyFrame>
+            </ColorAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.LayoutTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)" Storyboard.TargetName="FSBorder">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
     </UserControl.Resources>
+    <UserControl.RenderTransform>
+        <TransformGroup>
+            <ScaleTransform/>
+            <SkewTransform/>
+            <RotateTransform/>
+            <TranslateTransform/>
+        </TransformGroup>
+    </UserControl.RenderTransform>
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="FrameworkElement.Loaded">
             <BeginStoryboard Storyboard="{StaticResource OpenThing}"/>
@@ -56,7 +88,15 @@
         </EventTrigger>
     </UserControl.Triggers>
     <Border x:Name="FSBorder" Margin="1" BorderBrush="#FFCBCBCB" BorderThickness="1">
-        <Grid x:Name="MainGrid">
+        <Border.LayoutTransform>
+            <TransformGroup>
+                <ScaleTransform/>
+                <SkewTransform/>
+                <RotateTransform/>
+                <TranslateTransform/>
+            </TransformGroup>
+        </Border.LayoutTransform>
+        <Grid x:Name="MainGrid" Width="134">
             <Image x:Name="FilmstripImage" RenderTransformOrigin="0.5,0.5" Opacity="0" Source="../vectors/FileNotFound.png" MouseLeftButtonUp="FilmstripImage_MouseLeftButtonUp">
                 <Image.ContextMenu>
                     <ContextMenu/>
@@ -71,12 +111,13 @@
                 </Image.RenderTransform>
             </Image>
             <TextBlock x:Name="FilmstripID" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Bottom" Padding="4" Background="#B2B28118"/>
-            <Grid x:Name="HoverControlGrid" Margin="3,3,3,24" Background="#B2FFFFFF">
-                <StackPanel Margin="0,24,0,0">
+            <Grid x:Name="HoverControlGrid" Margin="0,0,0,24" Background="#B2FFFFFF">
+                <StackPanel Margin="2,27,2,0">
                     <Button x:Name="MakePrimaryButton" Content="Make Primary" VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14"/>
                     <Button x:Name="PacksizesButton" Content="Packsizes..." VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14"/>
                     <Button x:Name="CopyToFilmstripButton" Content="Copy to Filmstrip" VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14" Click="CopyToFilmstripButton_Click"/>
-                    <Button x:Name="AddToSkuButton" Content="Add to..." VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14"/>
+                    <Button x:Name="AddToSkuButton" Content="Add to sku..." VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14"/>
+                    <Button x:Name="RemoveFromFilmstripButton" Content="Remove from strip" VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14" Click="RemoveFromFilmstripButton_Click"/>
                 </StackPanel>
 
             </Grid>
