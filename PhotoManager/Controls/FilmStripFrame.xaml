@@ -114,9 +114,9 @@
             <Grid x:Name="HoverControlGrid" Margin="0,0,0,24" Background="#B2FFFFFF">
                 <StackPanel Margin="2,27,2,0">
                     <Button x:Name="MakePrimaryButton" Content="Make Primary" VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14"/>
-                    <Button x:Name="PacksizesButton" Content="Packsizes..." VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14"/>
+                    <Button x:Name="PacksizesButton" Content="Packsizes..." VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14" Click="PacksizesButton_Click"/>
                     <Button x:Name="CopyToFilmstripButton" Content="Copy to Filmstrip" VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14" Click="CopyToFilmstripButton_Click"/>
-                    <Button x:Name="AddToSkuButton" Content="Add to sku..." VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14"/>
+                    <Button x:Name="AddToSkuButton" Content="Add to sku..." VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14" Click="AddToSkuButton_Click"/>
                     <Button x:Name="RemoveFromFilmstripButton" Content="Remove from strip" VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14" Click="RemoveFromFilmstripButton_Click"/>
                 </StackPanel>
 

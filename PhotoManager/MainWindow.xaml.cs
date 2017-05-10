@@ -33,7 +33,7 @@ namespace PhotoManager
         public DispatcherTimer timer = null;
         internal Dispatcher MainDispatcher = null;
         public List<FileInfo> Photos = new List<FileInfo>();
-        private GridSku CurrentInstance = null;
+        internal GridSku CurrentInstance = null;
         private int Presses = 0;
         public MainWindow()
         {
@@ -315,7 +315,7 @@ namespace PhotoManager
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(Constants_ish.FilmstripSaveDataLocation());
+            (new AddToPacksizes()).Show();
         }
     }
 }

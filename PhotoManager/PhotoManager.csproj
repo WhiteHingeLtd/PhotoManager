@@ -20,10 +20,11 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>X:\IT\Remote Debugs\Photo Manager\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -58,6 +59,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\AddToPacksizes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\FilmStripFrame.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -90,6 +95,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\AddToPacksizes.xaml.cs">
+      <DependentUpon>AddToPacksizes.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Constants-ish.cs" />
     <Compile Include="Controls\FilmStripFrame.xaml.cs">
       <DependentUpon>FilmStripFrame.xaml</DependentUpon>
@@ -107,6 +115,7 @@
       <DependentUpon>RowDetailsTemplateTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="DataGridClasses\GridSku.cs" />
+    <Compile Include="DataGridClasses\ImageLoad.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

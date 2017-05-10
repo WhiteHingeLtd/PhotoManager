@@ -1,0 +1,107 @@
+﻿<Window x:Name="PacksizeSwitchWindow" x:Class="PhotoManager.Controls.AddToPacksizes"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PhotoManager.Controls"
+        mc:Ignorable="d"
+        Title="AddToPacksizes" HorizontalContentAlignment="Stretch" HorizontalAlignment="Left" SizeToContent="WidthAndHeight" ResizeMode="NoResize" KeyUp="PacksizeSwitchWindow_KeyUp">
+    <Window.Resources>
+        <ControlTemplate x:Key="CustomToggleButtons" TargetType="{x:Type ButtonBase}">
+            <Border x:Name="border" Padding="6" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True" Margin="0,0,0,4">
+                <TextBlock x:Name="contentPresenter" Text="{TemplateBinding Content}" Focusable="False" HorizontalAlignment="Left" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" FontSize="14" TextWrapping="Wrap"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Button.IsDefaulted" Value="True">
+                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FFDADADA"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF8B8B8B"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="White"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF8D8D8D"/>
+                </Trigger>
+                <Trigger Property="ToggleButton.IsChecked" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FFABE69A"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF397439"/>
+                </Trigger>
+                <Trigger Property="ToggleButton.IsChecked" Value="False">
+                    <Setter Property="Background" TargetName="border" Value="#FFE6AB9A"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF743939"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" TargetName="border" Value="#FFF4F4F4"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5"/>
+                    <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#FF838383"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <ControlTemplate x:Key="CloseButton" TargetType="{x:Type ButtonBase}">
+            <Border VerticalAlignment="Top" Width="100"  Padding="3" x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True" CornerRadius="15">
+                <TextBox x:Name="contentPresenter" FontSize="16" Text="{TemplateBinding Content}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Background="{x:Null}" Foreground="{TemplateBinding Foreground}" BorderBrush="{x:Null}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Button.IsDefaulted" Value="True">
+                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FFBEE6FD"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF3C7FB1"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FFC4E5F6"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF2C628B"/>
+                </Trigger>
+                <Trigger Property="ToggleButton.IsChecked" Value="True">
+                    <Setter Property="Background" TargetName="border" Value="#FFBCDDEE"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FF245A83"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" TargetName="border" Value="#FFF4F4F4"/>
+                    <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5"/>
+                    <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#FF838383"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </Window.Resources>
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Background="#FFB2B2B2">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="250"/>
+        </Grid.ColumnDefinitions>
+        <Grid x:Name="ImageSide" Margin="0">
+            <Grid.Background>
+                <ImageBrush ImageSource="/PhotoManager;component/vectors/DarkNoise.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,128,128"/>
+            </Grid.Background>
+            <Image x:Name="ImagePreview" HorizontalAlignment="Left" Height="400" VerticalAlignment="Top" Width="400"/>
+        </Grid>
+        <ScrollViewer Grid.Column="1" Margin="10,50,10,47" ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <StackPanel x:Name="PackSizeButtonContainer"/>
+        </ScrollViewer>
+        <TextBlock x:Name="ImageName" TextWrapping="Wrap" Text="TextBlock" Grid.Column="1" Margin="10,5,10,0" FontSize="18" VerticalAlignment="Top"/>
+        <TextBlock x:Name="ImageModified" TextWrapping="Wrap" Text="TextBlock" Grid.Column="1" Margin="10,28,10,0" FontSize="10" VerticalAlignment="Top" FontStyle="Italic" Foreground="#FF4F4F4F"/>
+        <Button x:Name="ApplyButton" Content="Apply" Grid.Column="1" HorizontalAlignment="Left" Margin="140,357,0,10" Template="{DynamicResource CloseButton}" Background="#FF89C4E0" Foreground="#FF233346" BorderBrush="#FF5A94B0" RenderTransformOrigin="0.5,0.5" Width="100" Click="ApplyButton_Click">
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
+        <Button x:Name="CancelButton" Content="Cancel" Grid.Column="1" HorizontalAlignment="Left" Margin="35,357,0,10" Template="{DynamicResource CloseButton}" Background="#FFC4CBC8" Foreground="#FF4B4B4B" BorderBrush="#FF787A79" RenderTransformOrigin="0.5,0.5" Width="100" Click="CancelButton_Click">
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
+
+    </Grid>
+</Window>

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PhotoManager.Controls"
         mc:Ignorable="d"
-        Title="ImageViewerWindow" Height="600" Width="800">
+        Title="ImageViewerWindow" Height="600" Width="800" KeyUp="Window_KeyUp">
     <Window.Background>
         <ImageBrush ImageSource="/PhotoManager;component/vectors/DarkNoise.png" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,128,128"/>
     </Window.Background>

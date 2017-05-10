@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using PhotoManager.DataGridClassess;
 
 namespace PhotoManager.Controls
 {
@@ -41,18 +42,7 @@ namespace PhotoManager.Controls
 
         private FileInfo SourceFileInfo = null;
         private BitmapImage SourceImage = null;
-
-        private BitmapImage MakeImage()
-        {
-            Console.WriteLine("Making image");
-            SourceImage = new BitmapImage();
-            SourceImage.BeginInit();
-            SourceImage.CacheOption = BitmapCacheOption.OnDemand;
-            SourceImage.UriSource = new Uri(SourceFileInfo.FullName);
-            SourceImage.EndInit();
-            Console.WriteLine("Made image");
-            return SourceImage;
-        }
+        
         private void ApplyImage(BitmapImage image)
         {
             Console.WriteLine("Applying image");
@@ -80,7 +70,7 @@ namespace PhotoManager.Controls
             Console.WriteLine("Thread Starting");
             Thread.Sleep(100);
             Console.WriteLine("Thread Started");
-            BitmapImage img = MakeImage();
+            BitmapImage img = Methods.MakeImage(null, ref SourceImage,SourceFileInfo);
             SourceImage.Freeze();
             Disp.BeginInvoke(DispatcherPriority.Normal, new Action(() => { ApplyImage(SourceImage); }));
 
@@ -95,6 +85,11 @@ namespace PhotoManager.Controls
         private void OpenButton_Click(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start(SourceFileInfo.FullName);
+        }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape) { this.Close(); }
         }
     }
 }

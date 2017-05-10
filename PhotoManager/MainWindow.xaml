@@ -19,7 +19,7 @@
                 <RowDefinition Height="28"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <ScrollViewer x:Name="FilmstripContainer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden" Grid.Row="1">
+            <ScrollViewer x:Name="FilmstripContainer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden" Grid.Row="1" PanningMode="HorizontalOnly">
                 <WrapPanel x:Name="Filmstrip" Margin="6" Height="138"/>
             </ScrollViewer>
             <Border BorderBrush="#FF8F8F8F" BorderThickness="0,0,0,1" Margin="5,0">

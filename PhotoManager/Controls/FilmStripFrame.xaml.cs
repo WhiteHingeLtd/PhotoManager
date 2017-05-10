@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using PhotoManager.DataGridClassess;
 using WHLClasses.MiscFunctions;
 
 namespace PhotoManager.Controls
@@ -88,23 +89,8 @@ namespace PhotoManager.Controls
 
         }
 
-
-        // Thanks to Ted from this articale for the code which inspired the following block eamning that I have to load the file into memory then feed it to the BitmapImage because BitmapImage objects lock the source!
-        // Source: http://tedshelloworld.blogspot.co.uk/2010/11/bitmaps-in-wpf-disposing-of-bitmaps-in.html
-        // This attribution has also been used in Framework which is where the function fo rthis resides for ez file loading.
-
         #region 'dodgy image stuff'
-        private BitmapImage MakeImage()
-        {
-            SourceImage = new BitmapImage();
-            SourceImage.BeginInit();
-            SourceImage.DecodePixelWidth = 134;
-            SourceImage.DecodePixelHeight = 134;
-            SourceImage.CacheOption = BitmapCacheOption.OnDemand;
-            SourceImage.StreamSource = Misc.LoadFileStreamToMemory(SourceFileInfo.FullName);
-            SourceImage.EndInit();
-            return SourceImage;
-        }
+        
         private void ApplyImage(BitmapImage image)
         {
             FilmstripImage.Source = image;
@@ -139,7 +125,7 @@ namespace PhotoManager.Controls
         private void BackgroundThread()
         {
             
-            BitmapImage img = MakeImage();
+            BitmapImage img = Methods.MakeImage(134, ref SourceImage, SourceFileInfo);
             SourceImage.Freeze();
             Disp.BeginInvoke(DispatcherPriority.Normal, new Action(() => { ApplyImage(SourceImage); }));
 
@@ -201,6 +187,17 @@ namespace PhotoManager.Controls
         private void RemoveFromFilmstripButton_Click(object sender, RoutedEventArgs e)
         {
             RemoveFromContainer(MainWindowRef.RemoveControlFromFilmstrip);
+        }
+
+        private void PacksizesButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Show up the packsizes window modally
+            var AddPacksizeWindow = new AddToPacksizes(SourceFileInfo,SourceImage,MainWindowRef.CurrentInstance.GetChildren());
+        }
+
+        private void AddToSkuButton_Click(object sender, RoutedEventArgs e)
+        {
+            var AddPacksizeWindow = new AddToPacksizes(SourceFileInfo, SourceImage, MainWindowRef.CurrentInstance.GetChildren());
         }
     }
 }
