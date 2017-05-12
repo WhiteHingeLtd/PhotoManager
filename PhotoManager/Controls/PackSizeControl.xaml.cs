@@ -41,7 +41,7 @@ namespace PhotoManager.Controls
                 try
                 {
                     FileInfo File = new FileInfo(Image.FullImagePath);
-                    FilmStripFrame newimg = new FilmStripFrame(File, MainWindowRef, false);
+                    FilmStripFrame newimg = new FilmStripFrame(File, MainWindowRef, false, Image.isPrimary);
                     packsizeFilmStripContainer.Children.Add(newimg);
                     newimg.BringIntoView();
                 }

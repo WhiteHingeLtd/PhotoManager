@@ -83,6 +83,8 @@ namespace PhotoManager.Controls
 
         }
 
+        private Dictionary<string, bool> _originalValues = new Dictionary<string, bool>();
+
         private void LoadUI(SkuCollection Children)
         {
             //Use the first one for showing the title
@@ -114,10 +116,12 @@ namespace PhotoManager.Controls
                     {
                         //We have it on this one.
                         Newb.IsChecked = true;
+                        _originalValues.Add(child.SKU, true);
                     }
                     else
                     {
                         Newb.IsChecked = false;
+                        _originalValues.Add(child.SKU, false);
                     }
                     PackSizeButtonContainer.Children.Add(Newb);
                 }
@@ -138,6 +142,35 @@ namespace PhotoManager.Controls
         private void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
             //We'll have to iterate through them all and apply them accordingly.
+            foreach (ToggleButton button in PackSizeButtonContainer.Children)
+            {
+                if (button.IsChecked != _originalValues[(button.Tag as WhlSKU).SKU])
+                {
+                    string Key = (button.Tag as WhlSKU).SKU + "_" + SourceFileInfo.Name.Replace(SourceFileInfo.Extension, "").Replace(".", "");
+                    //The value has changed!!
+                    if (button.IsChecked.Value)
+                    {
+                        //We need to add the row
+                        string IsPrimary = "False";
+                        if ((button.Tag as WhlSKU).Images.Count == 0)
+                        {IsPrimary = "True"; } //If there's only 1 image left on the packsize it should by made primary.
+                        string AddQuery = "INSERT INTO whldata.sku_images (filename, path, sku, shortsku, IsPrimary) VALUES ('"+Key+"','"+SourceFileInfo.FullName.Replace("\\","\\\\")+"','"+ (button.Tag as WhlSKU).SKU + "','"+ (button.Tag as WhlSKU).ShortSku + "','"+IsPrimary+"');";
+                        Console.Write("ADDIT on " + (button.Tag as WhlSKU).SKU + " - Result: " + WHLClasses.MySQL_Old.MySQL_Ext.insertupdate(AddQuery));
+                    }
+                    else
+                    {
+                        //We need to remove the row
+                        string AddQuery = "DELETE FROM whldata.sku_images WHERE filename='" + Key + "';";
+                        Console.Write("REMOVE on " + (button.Tag as WhlSKU).SKU + " - Result: " + WHLClasses.MySQL_Old.MySQL_Ext.insertupdate(AddQuery));
+                    }
+                    //Update the child's image records.
+                    (button.Tag as WhlSKU).UpdateImages();
+                    
+                    //And finally display the updated bit for the user. Doing it here shoulf reflect the primary state which was auto applied too.
+                    //We need to bacll back to the parent or something?
+                    this.Close();
+                }
+            }
         }
     }
 
