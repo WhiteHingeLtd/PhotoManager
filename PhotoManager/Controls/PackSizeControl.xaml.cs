@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
 using WHLClasses;
 using WHLClasses.MySQL_Old;
@@ -26,6 +27,7 @@ namespace PhotoManager.Controls
             MainWindowRef = main;
             ActiveSku = CurrentItem;
             packsizeText.Text = CurrentItem.PackSize.ToString();
+            if (!ActiveSku.NewItem.IsListed){packsizeText.Foreground = Brushes.DarkRed;}
             RedoButton.IsChecked = MainWindowRef.NeededState(CurrentItem.SKU);
             RefreshImages();
             main.ItemGrid.ScrollIntoView(main.ItemGrid.SelectedItem);

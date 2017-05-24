@@ -274,11 +274,16 @@ namespace PhotoManager
                 List<GridSku> gridcontentList = new List<GridSku>();
                 foreach (WhlSKU Sku in searchresults)
                 {
-                    GridSku NewGS = new GridSku(Sku, this);
-                    gridcontentList.Add(NewGS);
-                    if (searchresults.Count < 50) { NewGS.LoadChildrenAsync(); }
+                    if (Sku.isBundle)
+                    {
+                        GridSku NewGS = new GridSku(Sku, this);
+                        gridcontentList.Add(NewGS);
+                        if (searchresults.Count < 50)
+                        {
+                            NewGS.LoadChildrenAsync();
+                        }
 
-
+                    }
                 }
                 ItemGrid.ItemsSource = gridcontentList;
             }
