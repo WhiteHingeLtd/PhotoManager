@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using PhotoManager.Controls;
 using WHLClasses;
 
 namespace PhotoManager.DataGridClasses
@@ -19,6 +20,7 @@ namespace PhotoManager.DataGridClasses
 
         private SkuCollection children { get; set; }
 
+        internal RowDetailsControl Rds { get; set; }
 
         public GridSku(WhlSKU sku, MainWindow mainwindow)
         {

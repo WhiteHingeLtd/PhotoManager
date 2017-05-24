@@ -21,6 +21,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using PhotoManager.DataGridClassess;
 using WHLClasses.MiscFunctions;
+using WHLClasses.MySQL_Old;
 
 namespace PhotoManager.Controls
 {
@@ -33,6 +34,9 @@ namespace PhotoManager.Controls
         internal FileInfo SourceFileInfo = null;
         internal bool _isprimary = false;
         private MainWindow MainWindowRef = null;
+        internal bool _CanBePrimary = false;
+        internal PackSizeControl container { get; set; }
+        internal bool isLoaded = false;
         public bool IsPrimary
         {
             get { return _isprimary; }
@@ -40,6 +44,7 @@ namespace PhotoManager.Controls
             {
                 _isprimary = value;
                 UpdatePrimaryUI();
+                
             }
         }
 
@@ -47,42 +52,42 @@ namespace PhotoManager.Controls
         {
             if (_isprimary)
             {
-                FilmstripID.Background = new SolidColorBrush(Color.FromArgb(178, 178, 129, 24));
+                MainGrid.Background = new SolidColorBrush(Color.FromArgb(200,30,130,30));
+                MakePrimaryButton.Visibility = Visibility.Collapsed;
             }
             else
             {
-                FilmstripID.Background = new SolidColorBrush(Color.FromArgb(178,255,255,255));
+                MainGrid.Background = new SolidColorBrush(Color.FromArgb(200, 207, 207, 207));
+                MakePrimaryButton.Visibility = Visibility.Visible;
             }
         }
 
-        public FilmStripFrame(FileInfo IDText, MainWindow mainRef, bool FullSize, bool Primary = false)
+        public FilmStripFrame(FileInfo IDText, MainWindow mainRef, bool Filmstrip, bool Primary = false)
         {
             InitializeComponent();
             SourceFileInfo = IDText;
             MainWindowRef = mainRef;
             //We use fulklsize to work out if itsa going in the main fiilmstrip or one of the mini ones on the packsize controls.
-            if (FullSize)
+            IsPrimary = Primary;
+            if (Filmstrip)
             {
-                FilmstripID.Text = IDText.Name;
                 //Hide the buttons which we dont want on fimlstrip.
                 MakePrimaryButton.Visibility = Visibility.Collapsed;
                 CopyToFilmstripButton.Visibility = Visibility.Collapsed;
-                PacksizesButton.Visibility = Visibility.Collapsed;
-                AddToSkuButton.Visibility = Visibility.Visible;
                 RemoveFromFilmstripButton.Visibility = Visibility.Visible;
+                _CanBePrimary = false;
             }
             else
             {
                 //Hide the ones we sont want on the packsizes grid.
-                FilmstripID.Text = IDText.Name;
-                MainGrid.Background = Brushes.White;
-                AddToSkuButton.Visibility = Visibility.Collapsed;
-                PacksizesButton.Visibility = Visibility.Visible;
+                
                 CopyToFilmstripButton.Visibility = Visibility.Visible;
-                MakePrimaryButton.Visibility = Visibility.Visible;
+                // MakePrimaryButton.Visibility = Visibility.Visible; No, we did this before.
                 RemoveFromFilmstripButton.Visibility = Visibility.Collapsed;
+                _CanBePrimary = !Primary;
             }
-            IsPrimary = Primary;
+
+            RedoButton.IsChecked = MainWindowRef.RedoState(SourceFileInfo.FullName);
             
             ShowImage();
 
@@ -94,6 +99,7 @@ namespace PhotoManager.Controls
         private void ApplyImage(BitmapImage image)
         {
             FilmstripImage.Source = image;
+            isLoaded = true;
             AnimateImageIn();
         }
 
@@ -125,7 +131,7 @@ namespace PhotoManager.Controls
         private void BackgroundThread()
         {
             
-            BitmapImage img = Methods.MakeImage(134, ref SourceImage, SourceFileInfo);
+            BitmapImage img = Methods.MakeImage(212, ref SourceImage, SourceFileInfo);
             SourceImage.Freeze();
             Disp.BeginInvoke(DispatcherPriority.Normal, new Action(() => { ApplyImage(SourceImage); }));
 
@@ -156,9 +162,10 @@ namespace PhotoManager.Controls
         }
 
         #endregion
-        private void OpenInFolderButton_Click(object sender, RoutedEventArgs e)
+        private void OpenInFolderButton_Click(object sender, RoutedEventArgs e) //This name is a lie.
         {
-            System.Diagnostics.Process.Start("explorer.exe", "/select, \"" + SourceFileInfo.FullName + "\"");
+            if (isLoaded) { MainWindowRef.UpdateRedo(SourceFileInfo.FullName, RedoButton.IsChecked.Value); }
+            
         }
 
         private void EnlargeButton_Click(object sender, RoutedEventArgs e)
@@ -166,11 +173,18 @@ namespace PhotoManager.Controls
             OpenPhotoViewer();
         }
 
-        private void FilmstripImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void FilmstripImage_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ClickCount == 2)
+            if (e.LeftButton == MouseButtonState.Pressed && e.ClickCount == 2)
             {
-                OpenPhotoViewer();
+                if (_CanBePrimary)
+                {
+                    MakeThisPrimary();
+                }
+                else if (IsPrimary)
+                {
+                    MessageBox.Show("This image is already the primary one for this packsize.");
+                }
             }
         }
 
@@ -191,13 +205,53 @@ namespace PhotoManager.Controls
 
         private void PacksizesButton_Click(object sender, RoutedEventArgs e)
         {
-            //Show up the packsizes window modally
-            var AddPacksizeWindow = new AddToPacksizes(SourceFileInfo,SourceImage,MainWindowRef.CurrentInstance.GetChildren());
+            //Remove this image from the item, render reset etc.
+            container.RefreshingProgressBar.Visibility = Visibility.Visible;
+            //Remove the entry
+            MySQL_Ext.insertupdate("DELETE FROM whldata.sku_images WHERE sku='" + container.ActiveSku.SKU + "' AND path='" + SourceFileInfo.FullName.Replace("\\", "\\\\") + "'");
+            //Then finally add a changelog.
+            MySQL_Ext.insertupdate("INSERT INTO whldata.sku_changelog (shortsku, payrollId, reason, datetimechanged) VALUES ('" + container.ActiveSku.ShortSku + "'," + MainWindowRef.Data_User.AuthenticatedUser.PayrollId.ToString() + ",'Removed " + SourceFileInfo.Name + " from pack of " + container.ActiveSku.PackSize.ToString() + "','" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + "')");
+            //Reset
+            container.refreshAndRerender();
+
+
         }
 
         private void AddToSkuButton_Click(object sender, RoutedEventArgs e)
         {
             var AddPacksizeWindow = new AddToPacksizes(SourceFileInfo, SourceImage, MainWindowRef.CurrentInstance.GetChildren());
         }
+
+        private void FilmstripImage_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                //Mouse is pressed so it must be dragging.
+                DragDrop.DoDragDrop(this, SourceFileInfo, DragDropEffects.Copy);
+                //We now do the drag ops!
+
+            }
+        }
+
+        private void MakePrimaryButton_Click(object sender, RoutedEventArgs e)
+        {
+            MakeThisPrimary();
+        }
+
+        internal void MakeThisPrimary()
+        {
+            //Show the magic bar.
+            container.RefreshingProgressBar.Visibility = Visibility.Visible;
+            
+            //First we need to remove the primary from all of them.
+            MySQL_Ext.insertupdate("UPDATE whldata.sku_images SET IsPrimary='False' WHERE sku='" + container.ActiveSku.SKU + "';");
+            //Then we set this one to it.
+            MySQL_Ext.insertupdate("UPDATE whldata.sku_images SET IsPrimary='True' WHERE sku='" + container.ActiveSku.SKU + "' AND path='"+SourceFileInfo.FullName.Replace("\\","\\\\")+"'");
+            //Then finally add a changelog.
+            MySQL_Ext.insertupdate("INSERT INTO whldata.sku_changelog (shortsku, payrollId, reason, datetimechanged) VALUES ('" + container.ActiveSku.ShortSku +"'," + MainWindowRef.Data_User.AuthenticatedUser.PayrollId.ToString() +",'Marked " + SourceFileInfo.Name + " as the primary image" + " to pack of " + container.ActiveSku.PackSize.ToString() + "','" +DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") +"')");
+            //Done. Just need to tell the container to refresh.
+            container.refreshAndRerender(); //™
+        }
+
     }
 }

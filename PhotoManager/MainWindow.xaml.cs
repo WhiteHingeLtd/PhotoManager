@@ -8,12 +8,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Microsoft.Win32;
 using PhotoManager.Controls;
 using PhotoManager.DataGridClasses;
 using WHLClasses;
 using WHLClasses.Authentication;
+using WHLClasses.MySQL_Old;
 
 namespace PhotoManager
 {
@@ -35,6 +39,14 @@ namespace PhotoManager
         public List<FileInfo> Photos = new List<FileInfo>();
         internal GridSku CurrentInstance = null;
         private int Presses = 0;
+        internal OpenFileDialog FileDialog= new OpenFileDialog();
+        internal Dictionary<string, bool> ReDoBools = null;
+        //Pageing
+        private int _CurrentPage = 1;
+        private int _PageitemCount = 100;
+        private int _PageCount = 0;
+        
+
         public MainWindow()
         {
             InitializeComponent();
@@ -44,6 +56,9 @@ namespace PhotoManager
             timer.Tick += TimerTick;
             timer.Start();
             
+            //Set up the filedialog
+            FileDialog.Multiselect = true;
+            FileDialog.Filter = "Image Files(*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG";
         }
 
         #endregion
@@ -153,7 +168,7 @@ namespace PhotoManager
             this.Show();
             newSplash.ShowDialog();
             this.IsEnabled = true;
-            if (Filmstrip.Children.Count > 0) { (Filmstrip.Children[Filmstrip.Children.Count - 1] as FrameworkElement).BringIntoView(); }
+            if (Filmstrip.Children.Count > 0) { DropZoneRegion.BringIntoView(); }
             
         }
 
@@ -193,11 +208,56 @@ namespace PhotoManager
             
             worker.ReportProgress(0,"Loading Photo Detector");
             initialateFolderWatcher();
+            worker.ReportProgress(0,"Loading first page of data");
+
+            _PageCount = (int)Math.Ceiling(Convert.ToDouble(Data_SkusMixdown.Count / _PageitemCount));
+            MainDispatcher.Invoke(delegate
+            {
+                string fuck = "of " + (_PageCount+1).ToString();
+                Pages_PageCount.Text = fuck;
+                LoadPage(0);
+            });
+            
+            //Load the redo
+            worker.ReportProgress(0,"Loading redo states");
+            var ReDoData = MySQL_Ext.SelectData("SELECT * FROM whldata.image_redo") as List<Dictionary<string, object>>;
+            ReDoBools = new Dictionary<string, bool>();
+            foreach (Dictionary<string, object>  redoitem in ReDoData)
+            {
+                ReDoBools.Add((string)redoitem["filename"],Convert.ToBoolean(redoitem["redo"]));
+            }
+
             _isLoaded = true;
+            IgnoreSelection = false;
         }
 
 
+        internal void LoadPage(int pageNo)
+        {
+            _CurrentPage = pageNo;
+            Pages_CurrentPage.Text = (pageNo+1).ToString();
+            try
+            {
+                List<WhlSKU> searchresults = Data_SkusMixdown.Skip(_CurrentPage * _PageitemCount).Take(_PageitemCount).ToList();
+                List<GridSku> gridcontentList = new List<GridSku>();
+                foreach (WhlSKU Sku in searchresults)
+                {
+                    GridSku NewGS = new GridSku(Sku, this);
+                    gridcontentList.Add(NewGS);
+                    if (searchresults.Count < 50) { NewGS.LoadChildrenAsync(); }
 
+
+                }
+                ItemGrid.ItemsSource = gridcontentList;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                ItemGrid.ItemsSource = new List<GridSku>();
+            }
+            
+            
+        }
 #endregion
 
 #region "Filmstrip additions and stuff"
@@ -228,7 +288,7 @@ namespace PhotoManager
             {
                 FilmStripFrame newimg = new FilmStripFrame(file, this, true, false);
                 Filmstrip.Children.Add(newimg);
-                newimg.BringIntoView();
+                DropZoneRegion.BringIntoView();
                 if (_isLoaded)
                 {
                     MainDispatcher.Invoke(SaveFilmstrip, DispatcherPriority.ApplicationIdle);
@@ -316,6 +376,168 @@ namespace PhotoManager
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             (new AddToPacksizes()).Show();
+        }
+
+        private void RibbonShowHide_Click(object sender, RoutedEventArgs e)
+        {
+            if (FilmstripShowHide.IsChecked.Value)
+            {
+                FilmstripGrid.Height = Double.NaN;
+            }
+            else
+            {
+                FilmstripGrid.Height = 27;
+            }
+
+        }
+
+        private bool IgnoreSelection = true;
+        private void ItemGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)  
+        {
+            if (!IgnoreSelection && LoadNextPrevToggle.IsChecked.Value)
+            {
+                IgnoreSelection = true;
+                var SelectedIndex = ItemGrid.SelectedIndex;
+                ItemGrid.SelectedItems.Clear();         // remove the current selection then readd the one they selected plus the ones either side.
+                ItemGrid.SelectedItems.Add(ItemGrid.Items[SelectedIndex]);
+                try
+                {
+                    ItemGrid.SelectedItems.Add(ItemGrid.Items[SelectedIndex-1]);
+                }
+                catch (ArgumentOutOfRangeException a)
+                {
+                    //Noithing to do, just at the end.
+                }
+                try
+                {
+                    ItemGrid.SelectedItems.Add(ItemGrid.Items[SelectedIndex+1]);
+                }
+                catch (ArgumentOutOfRangeException a)
+                {
+                    //Noithing to do, just at the end.
+                }
+                //Bring it into view because changing the seleciton will have screwed the view up.
+                ItemGrid.ScrollIntoView(ItemGrid.SelectedItem);
+                IgnoreSelection = false;
+            }
+        }
+
+        private void DropZoneRegion_Drop(object sender, DragEventArgs e)
+        {
+            //SOEMTHING DROPPED
+            if (e.Data.GetDataPresent(typeof(FileInfo)))
+            {
+                //thank mr c for this stupid line
+                AddFilmstripItem(e.Data.GetData(typeof(FileInfo)) as FileInfo);
+            }
+            else
+            {
+                MessageBox.Show("Dropped object of unkown types: " + Environment.NewLine + String.Join(Environment.NewLine, e.Data.GetFormats(false)));
+            }
+            
+        }
+
+        private void DropZoneRegion_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.All;
+        }
+
+        private void DropZoneRegion_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            FileDialog.ShowDialog();
+            foreach (string file in FileDialog.FileNames)
+            {
+                try
+                {
+                    AddFilmstripItem(new FileInfo(file));
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                }
+                
+            }
+        }
+
+        private void Pages_Previous_Click(object sender, RoutedEventArgs e)
+        {
+            LoadPage(_CurrentPage -1 );
+        }
+
+        private void Pages_Next_Click(object sender, RoutedEventArgs e)
+        {
+            LoadPage(_CurrentPage + 1);
+        }
+
+        private void Pages_CurrentPage_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                LoadPage(Convert.ToInt32(Pages_CurrentPage.Text) - 1);
+            }
+            catch (Exception ex)
+            {
+                
+            }
+        }
+
+        internal void UpdateRedo(string Filename, bool NewValue)
+        {
+            //Save ht eupdate to the lcoal dict
+            ReDoBools[Filename] = NewValue;
+            //Then save it in the database.
+            var asd = MySQL_Ext.insertupdate("REPLACE INTO whldata.image_redo (filename, redo) VALUES ('" +
+                               Filename.Replace("\\", "\\\\") + "','" + NewValue.ToString() + "');");
+        }
+
+        internal bool RedoState(string filename)
+        {
+            if (ReDoBools.Keys.Contains(filename))
+            {
+                return ReDoBools[filename];
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private void Main_Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Add)
+            {
+                e.Handled = true;
+                try
+                {
+                    ItemGrid.SelectedIndex = ItemGrid.SelectedIndex + 1;
+                }
+                catch (Exception ex)
+                {
+                    //Do nothing. We tried.png.
+                }
+            }else if(e.Key == Key.Subtract){
+                e.Handled = true;
+                try
+                {
+                    ItemGrid.SelectedIndex = ItemGrid.SelectedIndex - 1;
+                }
+                catch (Exception ex)
+                {
+                    //Do nothing. We tried.png.
+                }
+                
+            }
+        }
+
+        private void Pages_CurrentPage_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (e.Delta > 0)
+            {
+                Pages_Next_Click(null,null);
+            }else if (e.Delta < 0)
+            {
+                Pages_Previous_Click(null, null);
+            }
         }
     }
 }

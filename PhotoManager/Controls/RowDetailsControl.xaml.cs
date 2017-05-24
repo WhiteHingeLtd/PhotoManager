@@ -34,7 +34,8 @@ namespace PhotoManager.Controls
             InitializeComponent();
             MainWindowRef = mainwindow;
             ActiveGridSku = gs;
-            skutb.Text = gs.Data.SKU + " " + gs.Data.Title.Label;
+            skutb.Text = gs.Data.SKU + ": " + gs.Data.Title.Label;
+            gs.Rds = this;
         }
         
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -74,7 +75,7 @@ namespace PhotoManager.Controls
         private void FillControls()
         {
             //Fill in the menial stuff.
-            LabelShort.Content = ActiveGridSku.Data.Title.Label;
+            LabelShort.Text = ActiveGridSku.Data.Title.Invoice;
             //Create the things
             foreach (WhlSKU sku in ActiveGridSku.GetChildren())
             {
@@ -82,6 +83,37 @@ namespace PhotoManager.Controls
                 {
                     packsizeControlContainer.Children.Add(new PackSizeControl(sku,MainWindowRef));
                 }
+            }
+        }
+        private void DropZoneRegion_Drop(object sender, DragEventArgs e)
+        {
+            //SOEMTHING DROPPED
+            if (e.Data.GetDataPresent(typeof(FileInfo)))
+            {
+
+                foreach (PackSizeControl container in packsizeControlContainer.Children)
+                {
+                    container.AddNewImage(e.Data.GetData(typeof(FileInfo)) as FileInfo, (container.packsizeFilmStripContainer.Children.Count == 0));
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Dropped object of unkown types: " + Environment.NewLine + String.Join(Environment.NewLine, e.Data.GetFormats(false)));
+            }
+
+        }
+
+        private void DropZoneRegion_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.All;
+        }
+
+        private void CopyToFilmstripButton_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (PackSizeControl container in packsizeControlContainer.Children)
+            {
+                container.refreshAndRerender();
             }
         }
     }

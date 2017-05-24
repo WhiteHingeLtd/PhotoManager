@@ -12,11 +12,21 @@ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             <RowDefinition Height="60"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Label x:Name="LabelShort" Content="Actual row details." VerticalAlignment="Top" FontSize="16" Margin="2,2,2,0"/>
-        <TextBlock x:Name="skutb" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Margin="320,38,0,0"/>
+        <TextBlock x:Name="LabelShort" Text="Actual row details." VerticalAlignment="Top" FontSize="22" Margin="205,2,2,0"/>
+        <TextBlock x:Name="skutb" HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Margin="336,35,0,0" FontSize="16" Height="22"/>
         <Grid Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}" Margin="0" Grid.Row="1">
             <StackPanel x:Name="packsizeControlContainer" VerticalAlignment="Top" MinHeight="50" Margin="3" Orientation="Horizontal" />
         </Grid>
-
+        <Border BorderBrush="#FFA2A2A2" BorderThickness="1" CornerRadius="6" ClipToBounds="True" Margin="0,2" HorizontalAlignment="Left" Width="200">
+            <Grid x:Name="DropZoneRegion" Background="#338F8F8F" ClipToBounds="True" AllowDrop="True" Drop="DropZoneRegion_Drop" DragOver="DropZoneRegion_DragOver" >
+                <Grid Margin="4,0,79,0" HorizontalAlignment="Left" Width="54">
+                    <Grid.Background>
+                        <ImageBrush ImageSource="/PhotoManager;component/vectors/100px drag drop asset.png" Stretch="Uniform"/>
+                    </Grid.Background>
+                </Grid>
+                <TextBlock x:Name="textBlock1" Margin="60,0,4,0" TextWrapping="Wrap" Text="Drag image here to add to all packsizes." TextAlignment="Center" Foreground="#FF6A6A6A" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+        <Button x:Name="RefreshContainersButton" Content="Refresh All Images" VerticalAlignment="Top" Margin="205,35,0,0" BorderBrush="#FFC7E6FF" Background="#CCD9F1FF" HorizontalContentAlignment="Center" Padding="1,1,1,0" FontSize="14" Click="CopyToFilmstripButton_Click" HorizontalAlignment="Left" Width="126"/>
     </Grid>
 </UserControl>

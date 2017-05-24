@@ -6,36 +6,125 @@
         xmlns:local="clr-namespace:PhotoManager"
         xmlns:dgc="clr-namespace:PhotoManager.DataGridClasses" x:Name="Main_Window" x:Class="PhotoManager.MainWindow"
         mc:Ignorable="d"
-        Title="Photo Manager" Width="900" Height="600" Initialized="Main_Window_Initialized" Icon="icon.ico">
+        Title="Photo Manager" Width="900" Height="600" Initialized="Main_Window_Initialized" Icon="icon.ico" KeyDown="Main_Window_KeyDown">
+    <Window.Resources>
+        <Storyboard x:Key="HintLoop" RepeatBehavior="Forever">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="DopubleClickHint">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="0:0:9.8" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="0:0:10" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="PlusMinusHint">
+                <EasingDoubleKeyFrame KeyTime="0:0:10" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="0:0:10.2" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="0:0:19.8" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="0:0:20" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ScrollPageHint">
+                <EasingDoubleKeyFrame KeyTime="0:0:20" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="0:0:20.2" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="0:0:29.8" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+                <EasingDoubleKeyFrame KeyTime="0:0:30" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <CubicEase EasingMode="EaseInOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Window.Resources>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource HintLoop}"/>
+        </EventTrigger>
+    </Window.Triggers>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
-            <RowDefinition/>
             <RowDefinition Height="30"/>
+            <RowDefinition/>
+            <RowDefinition Height="0"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid  Grid.Row="3" Background="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" >
+        <Grid x:Name="FilmstripGrid"  Grid.Row="3" Background="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" Height="27" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="28"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <ScrollViewer x:Name="FilmstripContainer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden" Grid.Row="1" PanningMode="HorizontalOnly">
-                <WrapPanel x:Name="Filmstrip" Margin="6" Height="138"/>
+                <WrapPanel>
+                    <WrapPanel x:Name="Filmstrip" Margin="6" Height="216"/>
+                    <Border BorderBrush="#FFA2A2A2" BorderThickness="1" Margin="0,5,6,6" Grid.Row="1" HorizontalAlignment="Right" Width="100" CornerRadius="10" ClipToBounds="True">
+                        <Grid x:Name="DropZoneRegion" Background="#338F8F8F" ClipToBounds="True" AllowDrop="True" Drop="DropZoneRegion_Drop" DragOver="DropZoneRegion_DragOver" MouseLeftButtonDown="DropZoneRegion_MouseLeftButtonDown">
+                            <Grid Margin="0,0,0,60">
+                                <Grid.Background>
+                                    <ImageBrush ImageSource="vectors/100px drag drop asset.png" Stretch="None"/>
+                                </Grid.Background>
+                            </Grid>
+                            <TextBlock x:Name="textBlock1" HorizontalAlignment="Center" Margin="3,0,3,30" TextWrapping="Wrap" Text="Drag images or files here (or click to add more)" VerticalAlignment="Bottom" TextAlignment="Center" Foreground="#FFB6B6B6"/>
+                        </Grid>
+                    </Border>
+                </WrapPanel>
             </ScrollViewer>
             <Border BorderBrush="#FF8F8F8F" BorderThickness="0,0,0,1" Margin="5,0">
                 <Grid>
-                    <CheckBox x:Name="folderWatcherEnabled" Content="Add files from folder:" Margin="0,7,185,0" VerticalAlignment="Top" Foreground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" HorizontalAlignment="Right" IsChecked="True" Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" BorderBrush="#FFBDBDBD" Unchecked="folderVarsChanged" Checked="folderVarsChanged"/>
-                    <TextBox x:Name="folderWatcherSourceFolder" Text="T:\Photos\Amazon"  Width="180" Margin="0,3" Background="White" BorderBrush="#FF8D6E6E" HorizontalAlignment="Right" VerticalContentAlignment="Center" Padding="3,0,0,0" TextChanged="folderVarsChanged"/>
+                    <CheckBox x:Name="folderWatcherEnabled" Content="Add files from folder:" Margin="0,7,220,0" VerticalAlignment="Top" Foreground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" HorizontalAlignment="Right" IsChecked="True" Background="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}" BorderBrush="#FFBDBDBD" Unchecked="folderVarsChanged" Checked="folderVarsChanged" Visibility="Hidden"/>
+                    <TextBox x:Name="folderWatcherSourceFolder" Text="T:\Photos\Amazon"  Width="180" Margin="0,3,35,3" Background="White" BorderBrush="#FF8D6E6E" HorizontalAlignment="Right" VerticalContentAlignment="Center" Padding="3,0,0,0" TextChanged="folderVarsChanged" Visibility="Hidden"/>
+                    <ToggleButton x:Name="FilmstripShowHide" Content="Show/Hide" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,2,-3,0" BorderBrush="{x:Null}" Width="90" Height="25" Click="RibbonShowHide_Click"/>
                 </Grid>
             </Border>
             <TextBlock x:Name="textBlock" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Filmstrip" VerticalAlignment="Top" Foreground="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}" Margin="6,3,0,0" FontSize="16"/>
+
 
         </Grid>
 
         <Button x:Name="button" Content="Add filmstrip" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="135,4,0,0" Click="button_Click" Height="20" Grid.Row="2"/>
         <TextBox x:Name="fstb" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" Margin="10,5,0,0" Grid.Row="2"/>
         <CheckBox x:Name="autocheckbox" Content="CheckBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="215,4,0,0" Height="15" Width="71" Grid.Row="2"/>
-        <DataGrid x:Name="ItemGrid" Margin="0" Grid.Row="1" BorderBrush="#FF919191" BorderThickness="0,1" AutoGenerateColumns="False" RowDetailsVisibilityChanged="ItemGrid_RowDetailsVisibilityChanged" SelectionMode="Single" IsTextSearchEnabled="True" IsReadOnly="True" AlternatingRowBackground="#FFE2E4E8" RowBackground="#FFF9F9F9" RowHeight="25" VirtualizingPanel.ScrollUnit="Pixel" EnableRowVirtualization="False">
+        <DataGrid x:Name="ItemGrid" Margin="0" Grid.Row="1" BorderBrush="#FF919191" BorderThickness="0,1" AutoGenerateColumns="False" RowDetailsVisibilityChanged="ItemGrid_RowDetailsVisibilityChanged" IsTextSearchEnabled="True" IsReadOnly="True" AlternatingRowBackground="#FFE2E4E8" RowBackground="#FFF9F9F9" RowHeight="25" VirtualizingPanel.ScrollUnit="Pixel" EnableRowVirtualization="False" SelectionChanged="ItemGrid_SelectionChanged">
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <Grid>
@@ -47,14 +136,78 @@
                 <dgc:GridSku></dgc:GridSku>
             </DataGrid.DataContext>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Sku" Binding="{Binding Sku}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Title" Binding="{Binding Title}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Sku" Binding="{Binding Sku}" Width="120" FontSize="11"></DataGridTextColumn>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" MinWidth="480" FontSize="11"/>
             </DataGrid.Columns>
 
         </DataGrid>
-        <TextBox x:Name="SearchBox" HorizontalAlignment="Left" Height="23" Margin="10,7,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="SearchButton" Content="Button" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Width="75" Click="SearchButton_Click"/>
-        <Button x:Name="button1" Content="Button" HorizontalAlignment="Left" Margin="376,10,0,0" VerticalAlignment="Top" Width="75" Click="button1_Click"/>
+
+        <Grid Margin="0">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF999999" Offset="1"/>
+                    <GradientStop Color="#FFAEAEAE" Offset="0.153"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <TextBox x:Name="SearchBox" Margin="54,3,0,3" TextWrapping="Wrap" Width="150" HorizontalAlignment="Left" VerticalContentAlignment="Center" Padding="3,0,0,0" BorderThickness="1,1,0,1" BorderBrush="#FF707070"/>
+            <Button x:Name="SearchButton" Content="Search" HorizontalAlignment="Left" Margin="204,3,0,0" VerticalAlignment="Top" Width="75" Click="SearchButton_Click" Height="24" BorderThickness="0,1,1,1" Padding="10,1,1,1">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <LinearGradientBrush.RelativeTransform>
+                            <TransformGroup>
+                                <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                <RotateTransform Angle="-90" CenterY="0.5" CenterX="0.5"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </LinearGradientBrush.RelativeTransform>
+                        <GradientStop Color="White" Offset="0.017"/>
+                        <GradientStop Color="#FFDDDDDD" Offset="0.196"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+            <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Search" VerticalAlignment="Top" Margin="10,7,0,0" FontWeight="Bold"/>
+            <TextBox x:Name="Pages_CurrentPage" Margin="421,3,0,3" TextWrapping="Wrap" Width="30" HorizontalAlignment="Left" VerticalContentAlignment="Center" Padding="3,0,0,0" BorderThickness="0,1" BorderBrush="#FF707070" FontWeight="Bold" Text="---" HorizontalContentAlignment="Right" TextChanged="Pages_CurrentPage_TextChanged" MouseWheel="Pages_CurrentPage_MouseWheel"/>
+            <Button x:Name="Pages_Next" Content="Next" HorizontalAlignment="Left" Margin="502,3,0,0" VerticalAlignment="Top" Width="48" Height="24" BorderThickness="0,1,1,1" Padding="10,1,1,1" Click="Pages_Next_Click">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <LinearGradientBrush.RelativeTransform>
+                            <TransformGroup>
+                                <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                <RotateTransform Angle="-90" CenterY="0.5" CenterX="0.5"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </LinearGradientBrush.RelativeTransform>
+                        <GradientStop Color="White" Offset="0.017"/>
+                        <GradientStop Color="#FFDDDDDD" Offset="0.196"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+            <TextBlock x:Name="textBlock2_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Pages" VerticalAlignment="Top" Margin="331,7,0,0" FontWeight="Bold"/>
+            <Button x:Name="Pages_Previous" Content="Prev" HorizontalAlignment="Left" Margin="373,3,0,0" VerticalAlignment="Top" Width="48" Height="24" BorderThickness="1,1,0,1" Padding="1,1,10,1" Click="Pages_Previous_Click">
+                <Button.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <LinearGradientBrush.RelativeTransform>
+                            <TransformGroup>
+                                <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                <RotateTransform Angle="90" CenterY="0.5" CenterX="0.5"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </LinearGradientBrush.RelativeTransform>
+                        <GradientStop Color="White" Offset="0.017"/>
+                        <GradientStop Color="#FFDDDDDD" Offset="0.196"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+            </Button>
+            <TextBox x:Name="Pages_PageCount" Margin="451,3,0,3" TextWrapping="Wrap" Width="51" HorizontalAlignment="Left" VerticalContentAlignment="Center" Padding="3,0,0,0" BorderThickness="0,1" BorderBrush="#FF707070" Text="of ---" IsReadOnly="True" MouseWheel="Pages_CurrentPage_MouseWheel"/>
+            <TextBlock x:Name="textBlock2_Copy1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="or" VerticalAlignment="Top" Margin="300,7,0,0" FontStyle="Italic"/>
+            <TextBlock x:Name="DopubleClickHint" HorizontalAlignment="Right" Margin="0,7,8,6" TextWrapping="Wrap" Text="DoubleClick an image to make it primary." Foreground="#FF5D5D5D" Opacity="0"/>
+            <TextBlock x:Name="PlusMinusHint" HorizontalAlignment="Right" Margin="0,7,8,6" TextWrapping="Wrap" Text="Press + or - on the numpad to move up or down" Foreground="#FF5D5D5D" Opacity="0"/>
+            <TextBlock x:Name="ScrollPageHint" HorizontalAlignment="Right" Margin="0,7,8,6" TextWrapping="Wrap" Text="Scroll your mouse on the page number to switch pages easily" Foreground="#FF5D5D5D" Opacity="0"/>
+        </Grid>
+        <ToggleButton x:Name="LoadNextPrevToggle" Content="Load Above + Below" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,3,3,0" Height="24" Width="140" Visibility="Collapsed"/>
 
     </Grid>
 </Window>

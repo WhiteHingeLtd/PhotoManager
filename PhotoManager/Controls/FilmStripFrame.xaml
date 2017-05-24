@@ -4,12 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PhotoManager.Controls"
-             mc:Ignorable="d" Width="138" Height="138" RenderTransformOrigin="0.5,0.5" ClipToBounds="True">
+             mc:Ignorable="d" Width="278" Height="216" RenderTransformOrigin="0.5,0.5" ClipToBounds="True" Margin="1,0">
     <UserControl.Resources>
         <Storyboard x:Key="OpenThing">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="userControl">
                 <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="138">
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="280">
                     <EasingDoubleKeyFrame.EasingFunction>
                         <CubicEase EasingMode="EaseInOut"/>
                     </EasingDoubleKeyFrame.EasingFunction>
@@ -31,16 +31,6 @@
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="FilmstripImage">
                 <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
                 <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="1"/>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-        <Storyboard x:Key="FadeControlsIn">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="HoverControlGrid">
-                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1"/>
-            </DoubleAnimationUsingKeyFrames>
-        </Storyboard>
-        <Storyboard x:Key="FadeControlsOut">
-            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="HoverControlGrid">
-                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0.005"/>
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
         <Storyboard x:Key="AnimateRemoval">
@@ -68,26 +58,7 @@
             </DoubleAnimationUsingKeyFrames>
         </Storyboard>
     </UserControl.Resources>
-    <UserControl.RenderTransform>
-        <TransformGroup>
-            <ScaleTransform/>
-            <SkewTransform/>
-            <RotateTransform/>
-            <TranslateTransform/>
-        </TransformGroup>
-    </UserControl.RenderTransform>
-    <UserControl.Triggers>
-        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-            <BeginStoryboard Storyboard="{StaticResource OpenThing}"/>
-        </EventTrigger>
-        <EventTrigger RoutedEvent="UIElement.MouseEnter" SourceName="HoverControlGrid">
-            <BeginStoryboard x:Name="FadeImageIn_BeginStoryboard" Storyboard="{StaticResource FadeControlsIn}"/>
-        </EventTrigger>
-        <EventTrigger RoutedEvent="UIElement.MouseLeave" SourceName="HoverControlGrid">
-            <BeginStoryboard x:Name="FadeControlsOut_BeginStoryboard" Storyboard="{StaticResource FadeControlsOut}"/>
-        </EventTrigger>
-    </UserControl.Triggers>
-    <Border x:Name="FSBorder" Margin="1" BorderBrush="#FFCBCBCB" BorderThickness="1">
+    <Border x:Name="FSBorder" Margin="0" BorderBrush="#FFCBCBCB" BorderThickness="0">
         <Border.LayoutTransform>
             <TransformGroup>
                 <ScaleTransform/>
@@ -96,8 +67,8 @@
                 <TranslateTransform/>
             </TransformGroup>
         </Border.LayoutTransform>
-        <Grid x:Name="MainGrid" Width="134">
-            <Image x:Name="FilmstripImage" RenderTransformOrigin="0.5,0.5" Opacity="0" Source="../vectors/FileNotFound.png" MouseLeftButtonUp="FilmstripImage_MouseLeftButtonUp">
+        <Grid x:Name="MainGrid" Margin="0">
+            <Image x:Name="FilmstripImage" RenderTransformOrigin="0.5,0.5" Opacity="0" Source="../vectors/FileNotFound.png" MouseDown="FilmstripImage_MouseDown" HorizontalAlignment="Left" VerticalAlignment="Top" Width="212" Height="212" MouseMove="FilmstripImage_MouseMove" Margin="2">
                 <Image.ContextMenu>
                     <ContextMenu/>
                 </Image.ContextMenu>
@@ -110,23 +81,50 @@
                     </TransformGroup>
                 </Image.RenderTransform>
             </Image>
-            <TextBlock x:Name="FilmstripID" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Bottom" Padding="4" Background="#B2B28118"/>
-            <Grid x:Name="HoverControlGrid" Margin="0,0,0,24" Background="#B2FFFFFF">
-                <StackPanel Margin="2,27,2,0">
-                    <Button x:Name="MakePrimaryButton" Content="Make Primary" VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14"/>
-                    <Button x:Name="PacksizesButton" Content="Packsizes..." VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14" Click="PacksizesButton_Click"/>
-                    <Button x:Name="CopyToFilmstripButton" Content="Copy to Filmstrip" VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14" Click="CopyToFilmstripButton_Click"/>
-                    <Button x:Name="AddToSkuButton" Content="Add to sku..." VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14" Click="AddToSkuButton_Click"/>
-                    <Button x:Name="RemoveFromFilmstripButton" Content="Remove from strip" VerticalAlignment="Top" Margin="1" BorderBrush="#FFC7E6FF" Background="#FFF4FBFF" HorizontalContentAlignment="Left" Padding="5,1,1,1" FontSize="14" Click="RemoveFromFilmstripButton_Click"/>
-                </StackPanel>
+            <Grid x:Name="HoverControlGrid" Margin="0,2,2,2" HorizontalAlignment="Right" Width="60">
+                <Button x:Name="MakePrimaryButton" VerticalAlignment="Top" Margin="0,100,0,0" BorderBrush="#FFC7E6FF" Background="#CCD9F1FF" HorizontalContentAlignment="Center" FontSize="14" Padding="0" Click="MakePrimaryButton_Click">
+                    <TextBlock Text="Make Primary" Padding="1" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"/>
+                </Button>
+                <Button x:Name="RemoveFromItemButton" Content="- Item" VerticalAlignment="Bottom" BorderBrush="#FFFFC7C7" Background="#CCFFDDDD" HorizontalContentAlignment="Left" Padding="1,1,1,0" FontSize="14" Click="PacksizesButton_Click" Height="40"/>
+                <Button x:Name="CopyToFilmstripButton" Content="+ F/strip" VerticalAlignment="Top" Margin="0,73,0,0" BorderBrush="#FFC7E6FF" Background="#CCD9F1FF" HorizontalContentAlignment="Left" Padding="1,1,1,0" FontSize="14" Click="CopyToFilmstripButton_Click"/>
+                <Button x:Name="RemoveFromFilmstripButton" Content="- F/strip" VerticalAlignment="Bottom" BorderBrush="#FFFFC7C7" Background="#CCFFDDDD" HorizontalContentAlignment="Left" Padding="1,1,1,0" FontSize="14" Click="RemoveFromFilmstripButton_Click" Height="40"/>
+                <Button x:Name="EnlargeButton" VerticalAlignment="Top" BorderBrush="#FFC7E6FF" Background="#CCD9F1FF" HorizontalContentAlignment="Center" Padding="0" FontSize="14" Click="EnlargeButton_Click">
+                    <TextBlock Text="Expand" Padding="1" TextWrapping="Wrap" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"/>
+                </Button>
+                <ToggleButton x:Name="RedoButton" VerticalAlignment="Top" Margin="0,28,0,0" BorderBrush="#FFC7E6FF" Background="#CCD9F1FF" HorizontalContentAlignment="Center" Padding="0" FontSize="14" Click="OpenInFolderButton_Click" Height="40" Content="Redo">
+                    <ToggleButton.Template>
+                        <ControlTemplate TargetType="{x:Type ButtonBase}">
+                            <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                <TextBlock x:Name="contentPresenter" Text="{TemplateBinding Content}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Button.IsDefaulted" Value="True">
+                                    <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" TargetName="border" Value="#FFBEE6FD"/>
+                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF3C7FB1"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="Background" TargetName="border" Value="#FFC4E5F6"/>
+                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF2C628B"/>
+                                </Trigger>
+                                <Trigger Property="ToggleButton.IsChecked" Value="True">
+                                    <Setter Property="Background" TargetName="border" Value="#FF281F46"/>
+                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF3E2483"/>
+                                    <Setter Property="Foreground" TargetName="contentPresenter" Value="#FFA44592"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Background" TargetName="border" Value="#FFF4F4F4"/>
+                                    <Setter Property="BorderBrush" TargetName="border" Value="#FFADB2B5"/>
+                                    <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="#FF838383"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </ToggleButton.Template>
+                </ToggleButton>
 
             </Grid>
-            <Button x:Name="EnlargeButton" HorizontalAlignment="Right" VerticalAlignment="Top" Width="34" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Height="24" Padding="0" Margin="0,3,3,0" ToolTip="Enlarge Image" Click="EnlargeButton_Click">
-                <Image x:Name="EnlargeImage" Source="/PhotoManager;component/vectors/Enlarge.png"/>
-            </Button>
-            <Button x:Name="OpenInFolderButton" HorizontalAlignment="Left" VerticalAlignment="Top" Width="34" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Height="24" Padding="0" Margin="3,3,0,0" ToolTip="Open in Folder" Click="OpenInFolderButton_Click">
-                <Image x:Name="OpenInFolderImage" Source="/PhotoManager;component/vectors/Folder.png"/>
-            </Button>
 
 
         </Grid>
