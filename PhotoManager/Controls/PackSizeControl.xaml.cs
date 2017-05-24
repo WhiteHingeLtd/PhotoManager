@@ -27,7 +27,7 @@ namespace PhotoManager.Controls
             MainWindowRef = main;
             ActiveSku = CurrentItem;
             packsizeText.Text = CurrentItem.PackSize.ToString();
-            if (!ActiveSku.NewItem.IsListed){packsizeText.Foreground = Brushes.DarkRed;}
+            if (!ActiveSku.NewItem.IsListed){packsizeText.Background = Brushes.Red;}
             RedoButton.IsChecked = MainWindowRef.NeededState(CurrentItem.SKU);
             RefreshImages();
             main.ItemGrid.ScrollIntoView(main.ItemGrid.SelectedItem);

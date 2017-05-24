@@ -274,7 +274,7 @@ namespace PhotoManager
                 List<GridSku> gridcontentList = new List<GridSku>();
                 foreach (WhlSKU Sku in searchresults)
                 {
-                    if (Sku.isBundle)
+                    if (!Sku.isBundle)
                     {
                         GridSku NewGS = new GridSku(Sku, this);
                         gridcontentList.Add(NewGS);
