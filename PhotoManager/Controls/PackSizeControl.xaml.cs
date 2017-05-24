@@ -18,6 +18,7 @@ namespace PhotoManager.Controls
     {
         internal WhlSKU ActiveSku = null;
         private MainWindow MainWindowRef = null;
+        private bool _IsLoaded = false;
         public PackSizeControl(WhlSKU CurrentItem, MainWindow main)
         {
             InitializeComponent();
@@ -25,8 +26,11 @@ namespace PhotoManager.Controls
             MainWindowRef = main;
             ActiveSku = CurrentItem;
             packsizeText.Text = CurrentItem.PackSize.ToString();
+            RedoButton.IsChecked = MainWindowRef.NeededState(CurrentItem.SKU);
             RefreshImages();
-            
+            main.ItemGrid.ScrollIntoView(main.ItemGrid.SelectedItem);
+            _IsLoaded = true;
+
         }
 
         internal void RefreshImages()
@@ -132,5 +136,9 @@ namespace PhotoManager.Controls
             refreshAndRerender();
         }
 
+        private void OpenInFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_IsLoaded) { MainWindowRef.UpdateNeeded(ActiveSku.SKU, RedoButton.IsChecked.Value); }
+        }
     }
 }

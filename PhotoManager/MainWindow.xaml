@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:PhotoManager"
         xmlns:dgc="clr-namespace:PhotoManager.DataGridClasses" x:Name="Main_Window" x:Class="PhotoManager.MainWindow"
         mc:Ignorable="d"
-        Title="Photo Manager" Width="900" Height="600" Initialized="Main_Window_Initialized" Icon="icon.ico" KeyDown="Main_Window_KeyDown">
+        Title="Photo Manager" Width="995" Height="600" Initialized="Main_Window_Initialized" Icon="icon.ico" KeyDown="Main_Window_KeyDown">
     <Window.Resources>
         <Storyboard x:Key="HintLoop" RepeatBehavior="Forever">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="DopubleClickHint">
@@ -149,8 +149,8 @@
                     <GradientStop Color="#FFAEAEAE" Offset="0.153"/>
                 </LinearGradientBrush>
             </Grid.Background>
-            <TextBox x:Name="SearchBox" Margin="54,3,0,3" TextWrapping="Wrap" Width="150" HorizontalAlignment="Left" VerticalContentAlignment="Center" Padding="3,0,0,0" BorderThickness="1,1,0,1" BorderBrush="#FF707070"/>
-            <Button x:Name="SearchButton" Content="Search" HorizontalAlignment="Left" Margin="204,3,0,0" VerticalAlignment="Top" Width="75" Click="SearchButton_Click" Height="24" BorderThickness="0,1,1,1" Padding="10,1,1,1">
+            <TextBox x:Name="SearchBox" Margin="54,3,0,3" TextWrapping="Wrap" Width="126" HorizontalAlignment="Left" VerticalContentAlignment="Center" Padding="3,0,0,0" BorderThickness="1,1,0,1" BorderBrush="#FF707070"/>
+            <Button x:Name="SearchButton" Content="Search" HorizontalAlignment="Left" Margin="180,3,0,0" VerticalAlignment="Top" Width="75" Click="SearchButton_Click" Height="24" BorderThickness="0,1,1,1" Padding="10,1,1,1">
                 <Button.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <LinearGradientBrush.RelativeTransform>
@@ -167,8 +167,8 @@
                 </Button.Background>
             </Button>
             <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Search" VerticalAlignment="Top" Margin="10,7,0,0" FontWeight="Bold"/>
-            <TextBox x:Name="Pages_CurrentPage" Margin="421,3,0,3" TextWrapping="Wrap" Width="30" HorizontalAlignment="Left" VerticalContentAlignment="Center" Padding="3,0,0,0" BorderThickness="0,1" BorderBrush="#FF707070" FontWeight="Bold" Text="---" HorizontalContentAlignment="Right" TextChanged="Pages_CurrentPage_TextChanged" MouseWheel="Pages_CurrentPage_MouseWheel"/>
-            <Button x:Name="Pages_Next" Content="Next" HorizontalAlignment="Left" Margin="502,3,0,0" VerticalAlignment="Top" Width="48" Height="24" BorderThickness="0,1,1,1" Padding="10,1,1,1" Click="Pages_Next_Click">
+            <TextBox x:Name="Pages_CurrentPage" Margin="372,3,0,3" TextWrapping="Wrap" Width="30" HorizontalAlignment="Left" VerticalContentAlignment="Center" Padding="3,0,0,0" BorderThickness="0,1" BorderBrush="#FF707070" FontWeight="Bold" Text="---" HorizontalContentAlignment="Right" TextChanged="Pages_CurrentPage_TextChanged" MouseWheel="Pages_CurrentPage_MouseWheel"/>
+            <Button x:Name="Pages_Next" Content="Next" HorizontalAlignment="Left" Margin="452,3,0,0" VerticalAlignment="Top" Width="48" Height="24" BorderThickness="0,1,1,1" Padding="10,1,1,1" Click="Pages_Next_Click">
                 <Button.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <LinearGradientBrush.RelativeTransform>
@@ -184,8 +184,8 @@
                     </LinearGradientBrush>
                 </Button.Background>
             </Button>
-            <TextBlock x:Name="textBlock2_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Pages" VerticalAlignment="Top" Margin="331,7,0,0" FontWeight="Bold"/>
-            <Button x:Name="Pages_Previous" Content="Prev" HorizontalAlignment="Left" Margin="373,3,0,0" VerticalAlignment="Top" Width="48" Height="24" BorderThickness="1,1,0,1" Padding="1,1,10,1" Click="Pages_Previous_Click">
+            <TextBlock x:Name="textBlock2_Copy" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Pages" VerticalAlignment="Top" Margin="282,7,0,0" FontWeight="Bold"/>
+            <Button x:Name="Pages_Previous" Content="Prev" HorizontalAlignment="Left" Margin="324,3,0,0" VerticalAlignment="Top" Width="48" Height="24" BorderThickness="1,1,0,1" Padding="1,1,10,1" Click="Pages_Previous_Click">
                 <Button.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <LinearGradientBrush.RelativeTransform>
@@ -201,11 +201,13 @@
                     </LinearGradientBrush>
                 </Button.Background>
             </Button>
-            <TextBox x:Name="Pages_PageCount" Margin="451,3,0,3" TextWrapping="Wrap" Width="51" HorizontalAlignment="Left" VerticalContentAlignment="Center" Padding="3,0,0,0" BorderThickness="0,1" BorderBrush="#FF707070" Text="of ---" IsReadOnly="True" MouseWheel="Pages_CurrentPage_MouseWheel"/>
-            <TextBlock x:Name="textBlock2_Copy1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="or" VerticalAlignment="Top" Margin="300,7,0,0" FontStyle="Italic"/>
+            <TextBox x:Name="Pages_PageCount" Margin="402,3,0,3" TextWrapping="Wrap" Width="50" HorizontalAlignment="Left" VerticalContentAlignment="Center" Padding="3,0,0,0" BorderThickness="0,1" BorderBrush="#FF707070" Text="of ---" IsReadOnly="True" MouseWheel="Pages_CurrentPage_MouseWheel"/>
+            <TextBlock x:Name="textBlock2_Copy1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="or" VerticalAlignment="Top" Margin="262,7,0,0" FontStyle="Italic"/>
             <TextBlock x:Name="DopubleClickHint" HorizontalAlignment="Right" Margin="0,7,8,6" TextWrapping="Wrap" Text="DoubleClick an image to make it primary." Foreground="#FF5D5D5D" Opacity="0"/>
             <TextBlock x:Name="PlusMinusHint" HorizontalAlignment="Right" Margin="0,7,8,6" TextWrapping="Wrap" Text="Press + or - on the numpad to move up or down" Foreground="#FF5D5D5D" Opacity="0"/>
             <TextBlock x:Name="ScrollPageHint" HorizontalAlignment="Right" Margin="0,7,8,6" TextWrapping="Wrap" Text="Scroll your mouse on the page number to switch pages easily" Foreground="#FF5D5D5D" Opacity="0"/>
+            <Button x:Name="ExportNeededButton" Content="Export Needed" HorizontalAlignment="Left" Margin="530,3,0,0" VerticalAlignment="Top" Width="102" Height="24" Click="ExportNeededButton_Click"/>
+            <Button x:Name="ExportRedoButton" Content="Export ReDos" HorizontalAlignment="Left" Margin="637,3,0,0" VerticalAlignment="Top" Width="84" Height="24" Click="ExportRedoButton_Click"/>
         </Grid>
         <ToggleButton x:Name="LoadNextPrevToggle" Content="Load Above + Below" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,3,3,0" Height="24" Width="140" Visibility="Collapsed"/>
 

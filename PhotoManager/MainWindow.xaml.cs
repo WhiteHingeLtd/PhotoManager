@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -40,12 +41,14 @@ namespace PhotoManager
         internal GridSku CurrentInstance = null;
         private int Presses = 0;
         internal OpenFileDialog FileDialog= new OpenFileDialog();
+        internal SaveFileDialog SaveDialog = new SaveFileDialog();
         internal Dictionary<string, bool> ReDoBools = null;
+        internal Dictionary<string, bool> NeedsImgBools = null;
         //Pageing
         private int _CurrentPage = 1;
         private int _PageitemCount = 100;
         private int _PageCount = 0;
-        
+
 
         public MainWindow()
         {
@@ -55,10 +58,15 @@ namespace PhotoManager
             timer.Interval = TimeSpan.FromSeconds(0.6);
             timer.Tick += TimerTick;
             timer.Start();
-            
+
             //Set up the filedialog
             FileDialog.Multiselect = true;
             FileDialog.Filter = "Image Files(*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG";
+
+            //And the savedialog
+            SaveDialog.DefaultExt = "*.CSV";
+            SaveDialog.AddExtension = true;
+            SaveDialog.Filter = "CSV Files(*.CSV)|*.CSV";
         }
 
         #endregion
@@ -217,16 +225,40 @@ namespace PhotoManager
                 Pages_PageCount.Text = fuck;
                 LoadPage(0);
             });
-            
-            //Load the redo
-            worker.ReportProgress(0,"Loading redo states");
-            var ReDoData = MySQL_Ext.SelectData("SELECT * FROM whldata.image_redo") as List<Dictionary<string, object>>;
-            ReDoBools = new Dictionary<string, bool>();
-            foreach (Dictionary<string, object>  redoitem in ReDoData)
+
+            try
             {
-                ReDoBools.Add((string)redoitem["filename"],Convert.ToBoolean(redoitem["redo"]));
+                //Load the redo
+                worker.ReportProgress(0,"Loading redo states");
+                var ReDoData = MySQL_Ext.SelectData("SELECT * FROM whldata.image_redo") as ArrayList;
+                ReDoBools = new Dictionary<string, bool>();
+                foreach (ArrayList redoitem in ReDoData)
+                {
+                    ReDoBools.Add((string)redoitem[0],Convert.ToBoolean(redoitem[1]));
+                }
+            }
+            catch (Exception ex)
+            {
+                
             }
 
+            try
+            {
+                worker.ReportProgress(0, "Loading images needed data");
+                var NeedsImgData = MySQL_Ext.SelectData("SELECT * FROM whldata.image_needed") as ArrayList;
+                NeedsImgBools = new Dictionary<string, bool>();
+                foreach (ArrayList neededitem in NeedsImgData)
+                {
+                    NeedsImgBools.Add((string)neededitem[0], Convert.ToBoolean(neededitem[1]));
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+
+            worker.ReportProgress(0, "Finishing Up");
             _isLoaded = true;
             IgnoreSelection = false;
         }
@@ -458,10 +490,88 @@ namespace PhotoManager
                 
             }
         }
+        
+        #region "aux data"
+
+        internal void UpdateRedo(string Filename, bool NewValue)
+        {
+            //Save ht eupdate to the lcoal dict
+            ReDoBools[Filename] = NewValue;
+            //Then save it in the database.
+            var asd = MySQL_Ext.insertupdate("REPLACE INTO whldata.image_redo (filename, redo) VALUES ('" +
+                               Filename.Replace("\\", "\\\\") + "','" + NewValue.ToString() + "');");
+        }
+
+        internal void UpdateNeeded(string Sku, bool NewValue)
+        {
+            //Save ht eupdate to the lcoal dict
+            NeedsImgBools[Sku] = NewValue;
+            //Then save it in the database.
+            var asd = MySQL_Ext.insertupdate("REPLACE INTO whldata.image_needed (Sku, Needed) VALUES ('" +
+                               Sku + "','" + NewValue.ToString() + "');");
+        }
+
+
+        internal bool RedoState(string filename)
+        {
+            if (ReDoBools.Keys.Contains(filename))
+            {
+                return ReDoBools[filename];
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        internal bool NeededState(string sku)
+        {
+            if (NeedsImgBools.Keys.Contains(sku))
+            {
+                return NeedsImgBools[sku];
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private void ExportNeededButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //Get the datas
+                var ExportData = MySQL_Ext.SelectData("SELECT Sku FROM whldata.image_needed WHERE Needed='True';") as ArrayList;
+                //create an empty eport string
+                string ExportString = "Sku";
+                //And loop through the rows.
+                foreach (ArrayList Row in ExportData)
+                {
+                    ExportString += Environment.NewLine + Row[0];
+                }
+                //Done. NOw save it. 
+                SaveDialog.ShowDialog();
+                var fs = new System.IO.StreamWriter(SaveDialog.FileName);
+                fs.Write(ExportString);
+                fs.Close();
+                MessageBox.Show("The CSV has been saved ");
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                MessageBox.Show("The file was unable to be saved. This might help: " + exception.Message);
+            }
+
+
+        }
+
+        #endregion
+
+        #region "bonus functionality"
 
         private void Pages_Previous_Click(object sender, RoutedEventArgs e)
         {
-            LoadPage(_CurrentPage -1 );
+            LoadPage(_CurrentPage - 1);
         }
 
         private void Pages_Next_Click(object sender, RoutedEventArgs e)
@@ -477,30 +587,10 @@ namespace PhotoManager
             }
             catch (Exception ex)
             {
-                
+
             }
         }
 
-        internal void UpdateRedo(string Filename, bool NewValue)
-        {
-            //Save ht eupdate to the lcoal dict
-            ReDoBools[Filename] = NewValue;
-            //Then save it in the database.
-            var asd = MySQL_Ext.insertupdate("REPLACE INTO whldata.image_redo (filename, redo) VALUES ('" +
-                               Filename.Replace("\\", "\\\\") + "','" + NewValue.ToString() + "');");
-        }
-
-        internal bool RedoState(string filename)
-        {
-            if (ReDoBools.Keys.Contains(filename))
-            {
-                return ReDoBools[filename];
-            }
-            else
-            {
-                return false;
-            }
-        }
 
         private void Main_Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -510,6 +600,7 @@ namespace PhotoManager
                 try
                 {
                     ItemGrid.SelectedIndex = ItemGrid.SelectedIndex + 1;
+                    //ItemGrid.ScrollIntoView(ItemGrid.SelectedItem);
                 }
                 catch (Exception ex)
                 {
@@ -520,6 +611,7 @@ namespace PhotoManager
                 try
                 {
                     ItemGrid.SelectedIndex = ItemGrid.SelectedIndex - 1;
+                    //ItemGrid.ScrollIntoView(ItemGrid.SelectedItem);
                 }
                 catch (Exception ex)
                 {
@@ -537,6 +629,36 @@ namespace PhotoManager
             }else if (e.Delta < 0)
             {
                 Pages_Previous_Click(null, null);
+            }
+        }
+
+
+        #endregion
+
+        private void ExportRedoButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //Get the datas
+                var ExportData = MySQL_Ext.SelectData("SELECT filename FROM whldata.image_redo WHERE redo='True';") as ArrayList;
+                //create an empty eport string
+                string ExportString = "Image";
+                //And loop through the rows.
+                foreach (ArrayList Row in ExportData)
+                {
+                    ExportString += Environment.NewLine + Row[0];
+                }
+                //Done. NOw save it. 
+                SaveDialog.ShowDialog();
+                var fs = new System.IO.StreamWriter(SaveDialog.FileName);
+                fs.Write(ExportString);
+                fs.Close();
+                MessageBox.Show("The CSV has been saved ");
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                MessageBox.Show("The file was unable to be saved. This might help: " + exception.Message);
             }
         }
     }
