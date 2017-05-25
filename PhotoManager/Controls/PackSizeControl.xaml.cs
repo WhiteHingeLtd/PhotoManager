@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using WHLClasses;
 using WHLClasses.MySQL_Old;
+using WHLClasses.Reporting;
 
 namespace PhotoManager.Controls
 {
@@ -39,30 +40,39 @@ namespace PhotoManager.Controls
         {
             packsizeFilmStripContainer.Children.Clear();
             bool PrimaryFound = false;
-            foreach (SKUImage Image in ActiveSku.Images)
+            try
             {
-                try
+                foreach (SKUImage Image in ActiveSku.Images)
                 {
-                    FileInfo File = new FileInfo(Image.FullImagePath);
-                    FilmStripFrame newimg = new FilmStripFrame(File, MainWindowRef, false, Image.isPrimary);
-                    newimg.container = this;
-                    if (Image.isPrimary)
+                    try
                     {
-                        PrimaryFound = true;
-                        packsizeFilmStripContainer.Children.Insert(0,newimg);
-                        //If it is the primary, we want it to show at the top.
+                        FileInfo File = new FileInfo(Image.FullImagePath);
+                        FilmStripFrame newimg = new FilmStripFrame(File, MainWindowRef, false, Image.isPrimary);
+                        newimg.container = this;
+                        if (Image.isPrimary)
+                        {
+                            PrimaryFound = true;
+                            packsizeFilmStripContainer.Children.Insert(0,newimg);
+                            //If it is the primary, we want it to show at the top.
+                        }
+                        else
+                        {
+                            packsizeFilmStripContainer.Children.Add(newimg);
+                        }
                     }
-                    else
+                    catch (Exception a)
                     {
-                        packsizeFilmStripContainer.Children.Add(newimg);
+                        //Oh no we had a missing image.
                     }
-                }
-                catch (Exception a)
-                {
-                    //Oh no we had a missing image.
-                }
 
+                }
             }
+            catch (Exception e)
+            {
+                ErrorReporting.ReportException(e, true, true);
+            }
+
+            
             if (PrimaryFound)
             {
                 packsizeAlertText.Visibility = Visibility.Collapsed;
