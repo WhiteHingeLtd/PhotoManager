@@ -155,13 +155,13 @@ namespace PhotoManager.Controls
                         if ((button.Tag as WhlSKU).Images.Count == 0)
                         {IsPrimary = "True"; } //If there's only 1 image left on the packsize it should by made primary.
                         string AddQuery = "INSERT INTO whldata.sku_images (filename, path, sku, shortsku, IsPrimary) VALUES ('"+Key+"','"+SourceFileInfo.FullName.Replace("\\","\\\\")+"','"+ (button.Tag as WhlSKU).SKU + "','"+ (button.Tag as WhlSKU).ShortSku + "','"+IsPrimary+"');";
-                        Console.Write("ADDIT on " + (button.Tag as WhlSKU).SKU + " - Result: " + WHLClasses.MySQL_Old.MySQL_Ext.insertupdate(AddQuery));
+                        Console.Write("ADDIT on " + (button.Tag as WhlSKU).SKU + " - Result: " + WHLClasses.MySQL.InsertUpdate(AddQuery));
                     }
                     else
                     {
                         //We need to remove the row
                         string AddQuery = "DELETE FROM whldata.sku_images WHERE filename='" + Key + "';";
-                        Console.Write("REMOVE on " + (button.Tag as WhlSKU).SKU + " - Result: " + WHLClasses.MySQL_Old.MySQL_Ext.insertupdate(AddQuery));
+                        Console.Write("REMOVE on " + (button.Tag as WhlSKU).SKU + " - Result: " + WHLClasses.MySQL.InsertUpdate(AddQuery));
                     }
                     //Update the child's image records.
                     (button.Tag as WhlSKU).UpdateImages();

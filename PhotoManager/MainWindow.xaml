@@ -124,7 +124,7 @@
         <Button x:Name="button" Content="Add filmstrip" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="135,4,0,0" Click="button_Click" Height="20" Grid.Row="2"/>
         <TextBox x:Name="fstb" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" Margin="10,5,0,0" Grid.Row="2"/>
         <CheckBox x:Name="autocheckbox" Content="CheckBox" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="215,4,0,0" Height="15" Width="71" Grid.Row="2"/>
-        <DataGrid x:Name="ItemGrid" Margin="0" Grid.Row="1" BorderBrush="#FF919191" BorderThickness="0,1" AutoGenerateColumns="False" RowDetailsVisibilityChanged="ItemGrid_RowDetailsVisibilityChanged" IsTextSearchEnabled="True" IsReadOnly="True" AlternatingRowBackground="#FFE2E4E8" RowBackground="#FFF9F9F9" RowHeight="25" VirtualizingPanel.ScrollUnit="Pixel" EnableRowVirtualization="False" SelectionChanged="ItemGrid_SelectionChanged">
+        <DataGrid x:Name="ItemGrid" Grid.Row="1" BorderBrush="#FF919191" BorderThickness="0,1" AutoGenerateColumns="False" RowDetailsVisibilityChanged="ItemGrid_RowDetailsVisibilityChanged" IsTextSearchEnabled="True" IsReadOnly="True" AlternatingRowBackground="#FFE2E4E8" RowBackground="#FFF9F9F9" RowHeight="25" VirtualizingPanel.ScrollUnit="Pixel" EnableRowVirtualization="False" SelectionChanged="ItemGrid_SelectionChanged">
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <Grid>
@@ -206,8 +206,9 @@
             <TextBlock x:Name="DopubleClickHint" HorizontalAlignment="Right" Margin="0,7,8,6" TextWrapping="Wrap" Text="DoubleClick an image to make it primary." Foreground="#FF5D5D5D" Opacity="0"/>
             <TextBlock x:Name="PlusMinusHint" HorizontalAlignment="Right" Margin="0,7,8,6" TextWrapping="Wrap" Text="Press + or - on the numpad to move up or down" Foreground="#FF5D5D5D" Opacity="0"/>
             <TextBlock x:Name="ScrollPageHint" HorizontalAlignment="Right" Margin="0,7,8,6" TextWrapping="Wrap" Text="Scroll your mouse on the page number to switch pages easily" Foreground="#FF5D5D5D" Opacity="0"/>
-            <Button x:Name="ExportNeededButton" Content="Export Needed" HorizontalAlignment="Left" Margin="530,3,0,0" VerticalAlignment="Top" Width="102" Height="24" Click="ExportNeededButton_Click"/>
-            <Button x:Name="ExportRedoButton" Content="Export ReDos" HorizontalAlignment="Left" Margin="637,3,0,0" VerticalAlignment="Top" Width="84" Height="24" Click="ExportRedoButton_Click"/>
+            <Button x:Name="ExportNeededButton" Content="Export Needed" HorizontalAlignment="Left" Margin="506,3,0,0" VerticalAlignment="Top" Width="102" Height="24" Click="ExportNeededButton_Click"/>
+            <Button x:Name="ExportRedoButton" Content="Export ReDos" HorizontalAlignment="Left" Margin="608,3,0,0" VerticalAlignment="Top" Width="84" Height="24" Click="ExportRedoButton_Click"/>
+            <Button x:Name="LoadNeededsButton" Content="Show Needed" HorizontalAlignment="Left" Margin="697,3,0,0" VerticalAlignment="Top" Width="98" Height="24" Click="LoadNeededsButton_Click"/>
         </Grid>
         <ToggleButton x:Name="LoadNextPrevToggle" Content="Load Above + Below" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,3,3,0" Height="24" Width="140" Visibility="Collapsed"/>
 

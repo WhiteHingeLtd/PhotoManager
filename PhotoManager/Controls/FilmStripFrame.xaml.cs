@@ -20,8 +20,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using PhotoManager.DataGridClassess;
+using WHLClasses;
 using WHLClasses.MiscFunctions;
-using WHLClasses.MySQL_Old;
+
 
 namespace PhotoManager.Controls
 {
@@ -208,9 +209,9 @@ namespace PhotoManager.Controls
             //Remove this image from the item, render reset etc.
             container.RefreshingProgressBar.Visibility = Visibility.Visible;
             //Remove the entry
-            MySQL_Ext.insertupdate("DELETE FROM whldata.sku_images WHERE sku='" + container.ActiveSku.SKU + "' AND path='" + SourceFileInfo.FullName.Replace("\\", "\\\\") + "'");
+            MySQL.InsertUpdate("DELETE FROM whldata.sku_images WHERE sku='" + container.ActiveSku.SKU + "' AND path='" + SourceFileInfo.FullName.Replace("\\", "\\\\") + "'");
             //Then finally add a changelog.
-            MySQL_Ext.insertupdate("INSERT INTO whldata.sku_changelog (shortsku, payrollId, reason, datetimechanged) VALUES ('" + container.ActiveSku.ShortSku + "'," + MainWindowRef.Data_User.AuthenticatedUser.PayrollId.ToString() + ",'Removed " + SourceFileInfo.Name + " from pack of " + container.ActiveSku.PackSize.ToString() + "','" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + "')");
+            MySQL.InsertUpdate("INSERT INTO whldata.sku_changelog (shortsku, payrollId, reason, datetimechanged) VALUES ('" + container.ActiveSku.ShortSku + "'," + MainWindowRef.Data_User.AuthenticatedUser.PayrollId.ToString() + ",'Removed " + SourceFileInfo.Name + " from pack of " + container.ActiveSku.PackSize.ToString() + "','" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + "')");
             //Reset
             container.refreshAndRerender();
 
@@ -242,13 +243,13 @@ namespace PhotoManager.Controls
         {
             //Show the magic bar.
             container.RefreshingProgressBar.Visibility = Visibility.Visible;
-            
+
             //First we need to remove the primary from all of them.
-            MySQL_Ext.insertupdate("UPDATE whldata.sku_images SET IsPrimary='False' WHERE sku='" + container.ActiveSku.SKU + "';");
+            MySQL.InsertUpdate("UPDATE whldata.sku_images SET IsPrimary='False' WHERE sku='" + container.ActiveSku.SKU + "';");
             //Then we set this one to it.
-            MySQL_Ext.insertupdate("UPDATE whldata.sku_images SET IsPrimary='True' WHERE sku='" + container.ActiveSku.SKU + "' AND path='"+SourceFileInfo.FullName.Replace("\\","\\\\")+"'");
+            MySQL.InsertUpdate("UPDATE whldata.sku_images SET IsPrimary='True' WHERE sku='" + container.ActiveSku.SKU + "' AND path='"+SourceFileInfo.FullName.Replace("\\","\\\\")+"'");
             //Then finally add a changelog.
-            MySQL_Ext.insertupdate("INSERT INTO whldata.sku_changelog (shortsku, payrollId, reason, datetimechanged) VALUES ('" + container.ActiveSku.ShortSku +"'," + MainWindowRef.Data_User.AuthenticatedUser.PayrollId.ToString() +",'Marked " + SourceFileInfo.Name + " as the primary image" + " to pack of " + container.ActiveSku.PackSize.ToString() + "','" +DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") +"')");
+            MySQL.InsertUpdate("INSERT INTO whldata.sku_changelog (shortsku, payrollId, reason, datetimechanged) VALUES ('" + container.ActiveSku.ShortSku +"'," + MainWindowRef.Data_User.AuthenticatedUser.PayrollId.ToString() +",'Marked " + SourceFileInfo.Name + " as the primary image" + " to pack of " + container.ActiveSku.PackSize.ToString() + "','" +DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") +"')");
             //Done. Just need to tell the container to refresh.
             container.refreshAndRerender(); //™
         }

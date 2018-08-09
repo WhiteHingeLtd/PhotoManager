@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using WHLClasses;
-using WHLClasses.MySQL_Old;
 using WHLClasses.Reporting;
 
 namespace PhotoManager.Controls
@@ -136,14 +135,14 @@ namespace PhotoManager.Controls
         {
             RefreshingProgressBar.Visibility = Visibility.Visible;
             //Add to the database (with primary if applicable)
-            if (Primary) { MySQL_Ext.insertupdate("UPDATE whldata.sku_images SET IsPrimary='False' WHERE sku='" + ActiveSku.SKU + "';"); }
+            if (Primary) { MySQL.InsertUpdate("UPDATE whldata.sku_images SET IsPrimary='False' WHERE sku='" + ActiveSku.SKU + "';"); }
             string Key = ActiveSku.SKU + "_" + sourceFileInfo.Name.Replace(sourceFileInfo.Extension, "");
-            MySQL_Ext.insertupdate(
+            MySQL.InsertUpdate(
                 "INSERT INTO whldata.sku_images (filename, path, sku, shortsku, IsPrimary) VALUES ('" + Key + "','" +
                 sourceFileInfo.FullName.Replace("\\", "\\\\") + "','" + ActiveSku.SKU + "','" + ActiveSku.ShortSku +
                 "','" + Primary + "')");
             //Then finally add a changelog.
-            MySQL_Ext.insertupdate("INSERT INTO whldata.sku_changelog (shortsku, payrollId, reason, datetimechanged) VALUES ('" + ActiveSku.ShortSku + "'," + MainWindowRef.Data_User.AuthenticatedUser.PayrollId.ToString() + ",'Added " + sourceFileInfo.Name + " to pack of " + ActiveSku.PackSize.ToString() + "','" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + "')");
+            MySQL.InsertUpdate("INSERT INTO whldata.sku_changelog (shortsku, payrollId, reason, datetimechanged) VALUES ('" + ActiveSku.ShortSku + "'," + MainWindowRef.Data_User.AuthenticatedUser.PayrollId.ToString() + ",'Added " + sourceFileInfo.Name + " to pack of " + ActiveSku.PackSize.ToString() + "','" + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") + "')");
             //Then RefreshRerender™
             refreshAndRerender();
         }

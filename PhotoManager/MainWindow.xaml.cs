@@ -18,7 +18,6 @@ using PhotoManager.Controls;
 using PhotoManager.DataGridClasses;
 using WHLClasses;
 using WHLClasses.Authentication;
-using WHLClasses.MySQL_Old;
 
 namespace PhotoManager
 {
@@ -230,7 +229,7 @@ namespace PhotoManager
             {
                 //Load the redo
                 worker.ReportProgress(0,"Loading redo states");
-                var ReDoData = MySQL_Ext.SelectData("SELECT * FROM whldata.image_redo") as ArrayList;
+                var ReDoData = MySQL.SelectData("SELECT * FROM whldata.image_redo") as ArrayList;
                 ReDoBools = new Dictionary<string, bool>();
                 foreach (ArrayList redoitem in ReDoData)
                 {
@@ -245,7 +244,7 @@ namespace PhotoManager
             try
             {
                 worker.ReportProgress(0, "Loading images needed data");
-                var NeedsImgData = MySQL_Ext.SelectData("SELECT * FROM whldata.image_needed") as ArrayList;
+                var NeedsImgData = MySQL.SelectData("SELECT * FROM whldata.image_needed") as ArrayList;
                 NeedsImgBools = new Dictionary<string, bool>();
                 foreach (ArrayList neededitem in NeedsImgData)
                 {
@@ -386,7 +385,7 @@ namespace PhotoManager
 
 
 
-        private void ItemGrid_RowDetailsVisibilityChanged(object sender, System.Windows.Controls.DataGridRowDetailsEventArgs e)
+        private void ItemGrid_RowDetailsVisibilityChanged(object sender, DataGridRowDetailsEventArgs e)
         {
             //Basically when a row is selected
             if ((CurrentInstance != e.Row.Item as GridSku))
@@ -503,7 +502,7 @@ namespace PhotoManager
             //Save ht eupdate to the lcoal dict
             ReDoBools[Filename] = NewValue;
             //Then save it in the database.
-            var asd = MySQL_Ext.insertupdate("REPLACE INTO whldata.image_redo (filename, redo) VALUES ('" +
+            var asd = MySQL.InsertUpdate("REPLACE INTO whldata.image_redo (filename, redo) VALUES ('" +
                                Filename.Replace("\\", "\\\\") + "','" + NewValue.ToString() + "');");
         }
 
@@ -512,7 +511,7 @@ namespace PhotoManager
             //Save ht eupdate to the lcoal dict
             NeedsImgBools[Sku] = NewValue;
             //Then save it in the database.
-            var asd = MySQL_Ext.insertupdate("REPLACE INTO whldata.image_needed (Sku, Needed) VALUES ('" +
+            var asd = MySQL.InsertUpdate("REPLACE INTO whldata.image_needed (Sku, Needed) VALUES ('" +
                                Sku + "','" + NewValue.ToString() + "');");
         }
 
@@ -546,7 +545,7 @@ namespace PhotoManager
             try
             {
                 //Get the datas
-                var ExportData = MySQL_Ext.SelectData("SELECT Sku FROM whldata.image_needed WHERE Needed='True';") as ArrayList;
+                var ExportData = MySQL.SelectData("SELECT Sku FROM whldata.image_needed WHERE Needed='True';") as ArrayList;
                 //create an empty eport string
                 string ExportString = "Sku";
                 //And loop through the rows.
@@ -645,7 +644,7 @@ namespace PhotoManager
             try
             {
                 //Get the datas
-                var ExportData = MySQL_Ext.SelectData("SELECT filename FROM whldata.image_redo WHERE redo='True';") as ArrayList;
+                var ExportData = MySQL.SelectData("SELECT filename FROM whldata.image_redo WHERE redo='True';") as ArrayList;
                 //create an empty eport string
                 string ExportString = "Image";
                 //And loop through the rows.
@@ -665,6 +664,36 @@ namespace PhotoManager
                 Console.WriteLine(exception);
                 MessageBox.Show("The file was unable to be saved. This might help: " + exception.Message);
             }
+        }
+
+        private void LoadNeededsButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            MessageBox.Show("This will take a few seconds to load. Click OK and wait for the items to load.");
+            List<GridSku> gridcontentList = new List<GridSku>();
+        
+
+            var results = NeedsImgBools.Where(delegate(KeyValuePair<string, bool> pair) { return pair.Value == true; });
+            var shorts = new List<string>();
+            foreach (KeyValuePair<string, bool> value in results)
+            {
+                if (!shorts.Contains(value.Key.Substring(0,7)))
+                {
+                    WhlSKU sku = Data_SkusMixdown.SearchSKUSReturningSingleSku(value.Key.Substring(0, 7) + "0001");
+                    if (!sku.isBundle)
+                    {
+                        shorts.Add(value.Key.Substring(0, 7));
+                        GridSku NewGS = new GridSku(sku, this);
+                        gridcontentList.Add(NewGS);
+                        if (results.Count() < 50)
+                        {
+                            NewGS.LoadChildrenAsync();
+                        }
+                    }
+                    
+                }
+            }
+            ItemGrid.ItemsSource = gridcontentList;
         }
     }
 }
