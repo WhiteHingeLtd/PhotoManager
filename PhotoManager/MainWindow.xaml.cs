@@ -229,31 +229,31 @@ namespace PhotoManager
             {
                 //Load the redo
                 worker.ReportProgress(0,"Loading redo states");
-                var ReDoData = MySQL.SelectData("SELECT * FROM whldata.image_redo") as ArrayList;
+                var ReDoData = MySQL.SelectDataDictionary("SELECT * FROM whldata.image_redo");
                 ReDoBools = new Dictionary<string, bool>();
-                foreach (ArrayList redoitem in ReDoData)
+                foreach (var redoitem in ReDoData)
                 {
-                    ReDoBools.Add((string)redoitem[0],Convert.ToBoolean(redoitem[1]));
+                    ReDoBools.Add((string)redoitem["filename"],Convert.ToBoolean(redoitem["redo"]));
                 }
             }
             catch (Exception ex)
             {
-                
+                //
             }
 
             try
             {
                 worker.ReportProgress(0, "Loading images needed data");
-                var NeedsImgData = MySQL.SelectData("SELECT * FROM whldata.image_needed") as ArrayList;
+                var NeedsImgData = MySQL.SelectDataDictionary("SELECT * FROM whldata.image_needed");
                 NeedsImgBools = new Dictionary<string, bool>();
-                foreach (ArrayList neededitem in NeedsImgData)
+                foreach (var neededItem in NeedsImgData)
                 {
-                    NeedsImgBools.Add((string)neededitem[0], Convert.ToBoolean(neededitem[1]));
+                    NeedsImgBools.Add((string)neededItem["Sku"], Convert.ToBoolean(neededItem["Needed"]));
                 }
             }
             catch (Exception ex)
             {
-
+                //
             }
 
 
@@ -545,13 +545,13 @@ namespace PhotoManager
             try
             {
                 //Get the datas
-                var ExportData = MySQL.SelectData("SELECT Sku FROM whldata.image_needed WHERE Needed='True';") as ArrayList;
+                var ExportData = MySQL.SelectDataDictionary("SELECT Sku FROM whldata.image_needed WHERE Needed='True';");
                 //create an empty eport string
                 string ExportString = "Sku";
                 //And loop through the rows.
-                foreach (ArrayList Row in ExportData)
+                foreach (var row in ExportData)
                 {
-                    ExportString += Environment.NewLine + Row[0];
+                    ExportString += Environment.NewLine + row["sku"];
                 }
                 //Done. NOw save it. 
                 SaveDialog.ShowDialog();
@@ -644,13 +644,13 @@ namespace PhotoManager
             try
             {
                 //Get the datas
-                var ExportData = MySQL.SelectData("SELECT filename FROM whldata.image_redo WHERE redo='True';") as ArrayList;
-                //create an empty eport string
+                var ExportData = MySQL.SelectDataDictionary("SELECT filename FROM whldata.image_redo WHERE redo='True';");
+                //create an empty export string
                 string ExportString = "Image";
                 //And loop through the rows.
-                foreach (ArrayList Row in ExportData)
+                foreach (var Row in ExportData)
                 {
-                    ExportString += Environment.NewLine + Row[0];
+                    ExportString += Environment.NewLine + Row["filename"];
                 }
                 //Done. NOw save it. 
                 SaveDialog.ShowDialog();
